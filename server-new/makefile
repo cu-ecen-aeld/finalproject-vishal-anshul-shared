@@ -22,4 +22,4 @@ aesdsocket-new.o : aesdsocket-new.c
 	$(CROSS_COMPILE)$(CC) $(CFLAGS) -c aesdsocket-new.c $(LDFLAGS)
 
 clean :
-	rm -f *.o client
+	rm -f *.o aesdsocket-new
