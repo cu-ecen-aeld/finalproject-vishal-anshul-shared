@@ -10,7 +10,7 @@
 AesdWindow::AesdWindow()
 {
     layouts = new Layouts;
-    QVBoxLayout *layout = new QVBoxLayout;
+    //QVBoxLayout *layout = new QVBoxLayout;
 
     /*Create and position the button */
     m_button = new QPushButton("Button-1",this);
