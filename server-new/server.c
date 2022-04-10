@@ -76,7 +76,7 @@ static void timer_handler(int sig_no){
     timer_up = 1;
     printf("timer_up_1:%d\r\n",timer_up);
 
-}
+} 
         
  /***********************************************************************************************
 * Name          : Main
