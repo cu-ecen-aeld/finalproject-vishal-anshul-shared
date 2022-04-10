@@ -34,13 +34,13 @@ void func(int sockfd)
     while(1) 
     {
     	//printf("timer_up:%d\r\n",timer_up);
-        if(timer_up){
+        //if(timer_up){
             printf("Inside socket send!\n\r");
             rt = write(sockfd, sensor_data, sizeof(sensor_data)); // send the message to client
             printf("sent bytes:%d\r\n",rt);
             timer_up = 0;
             printf("timer_up_0:%d\r\n",timer_up);
-        }
+        //}
     }
 }
 
