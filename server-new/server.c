@@ -21,14 +21,14 @@
 ***********************************************************************************************/
 void func(int sockfd)
 {
-    char buffer[]="This is sample data.";
+    char buffer[]="Test data.";
  
     while(1) 
     {
         write(sockfd, buffer, sizeof(buffer)); // send the message to client
         
         //put a hardspin loop as a delay
-        for (int i=0; i<500; i++)
+        for (int i=0; i<100000; i++)
             for(int j=0; j<100000; j++);
     }
 }

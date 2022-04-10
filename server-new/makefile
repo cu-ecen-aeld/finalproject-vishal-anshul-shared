@@ -12,14 +12,14 @@ ifeq ($(LDFLAGS),)
 	LDFLAGS= -lrt
 endif
 
-all: aesdsocket-new
-default: aesdsocket-new
+all: server
+default: server
 
-aesdsocket-new : aesdsocket-new.o
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) -o aesdsocket-new aesdsocket-new.o $(LDFLAGS)
+server : server.o
+	$(CROSS_COMPILE)$(CC) $(CFLAGS) -o server server.o $(LDFLAGS)
 
-aesdsocket-new.o : aesdsocket-new.c
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) -c aesdsocket-new.c $(LDFLAGS)
+server.o : server.c
+	$(CROSS_COMPILE)$(CC) $(CFLAGS) -c server.c $(LDFLAGS)
 
 clean :
-	rm -f *.o aesdsocket-new
+	rm -f *.o server
