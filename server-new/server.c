@@ -29,12 +29,17 @@ char sensor_data[] = "temp:15.4 ^C\n";
 ***********************************************************************************************/
 void func(int sockfd)
 {
+    int rt = 0;
  
     while(1) 
     {
+    	//printf("timer_up:%d\r\n",timer_up);
         if(timer_up){
-            write(sockfd, sensor_data, sizeof(sensor_data)); // send the message to client
+            printf("Inside socket send!\n\r");
+            rt = write(sockfd, sensor_data, sizeof(sensor_data)); // send the message to client
+            printf("sent bytes:%d\r\n",rt);
             timer_up = 0;
+            printf("timer_up_0:%d\r\n",timer_up);
         }
     }
 }
@@ -69,6 +74,7 @@ static void timer_handler(int sig_no){
     printf("time value:%s\n",time_string);
 
     timer_up = 1;
+    printf("timer_up_1:%d\r\n",timer_up);
 
 }
         
