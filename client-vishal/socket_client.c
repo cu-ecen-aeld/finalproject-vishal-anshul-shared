@@ -24,7 +24,7 @@ void func(int sockfd)
     while(1) {
         bzero(buffer, sizeof(buffer));
         while(read(sockfd, buffer, sizeof(buffer))==0);  // read client message and copy that in the buffer
-        printf("From Server : %s\n\r", buffer);
+        printf("Sensor data : %s\n\r", buffer);
         
         //write(sockfd,buffer,sizeof(buffer));
     }

@@ -7,13 +7,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <signal.h>
+#include <syslog.h>
+#include <errno.h>
+#include <time.h>
+#include <sys/time.h>
 
 
 #define SIZE 80
 #define PORT 8080
 #define SA struct sockaddr
-   
- /***********************************************************************************************
+
+static int timer_up = 0;
+char sensor_data[] = "temp:15.4 ^C\n";
+ 
+/***********************************************************************************************
 * Name          : func
 * Description   : function for server- client communication 
 * Parameters    : sockfd
@@ -21,16 +29,47 @@
 ***********************************************************************************************/
 void func(int sockfd)
 {
-    char buffer[]="Test data.";
  
     while(1) 
     {
-        write(sockfd, buffer, sizeof(buffer)); // send the message to client
-        
-        //put a hardspin loop as a delay
-        for (int i=0; i<100000; i++)
-            for(int j=0; j<100000; j++);
+        if(timer_up){
+            write(sockfd, sensor_data, sizeof(sensor_data)); // send the message to client
+            timer_up = 0;
+        }
     }
+}
+
+/***********************************************************************************************
+* Name          : timer_handler
+* Description   : function for SIGALRM handler 
+* Parameters    : signal no.
+* RETURN        : N/A
+***********************************************************************************************/
+static void timer_handler(int sig_no){
+
+    /*first store the local time in a buffer*/
+    char time_string[200];
+    time_t ti;
+    struct tm *tm_ptr;
+    int timer_len = 0;
+
+    ti = time(NULL);
+    tm_ptr = localtime(&ti);
+    if(tm_ptr == NULL){
+        perror("Local timer error!");
+        exit(EXIT_FAILURE);
+    }
+
+    timer_len = strftime(time_string,sizeof(time_string),"timestamp:%d.%b.%y - %k:%M:%S\n",tm_ptr);
+    if(timer_len == 0){
+        perror("strftimer returned 0!");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("time value:%s\n",time_string);
+
+    timer_up = 1;
+
 }
         
  /***********************************************************************************************
@@ -43,6 +82,26 @@ int main()
 {
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
+
+    /*Registering SIGARM */
+    signal(SIGALRM,timer_handler);
+
+    /*Timer handler part*/
+    struct itimerval inter_timer;
+
+    inter_timer.it_interval.tv_sec = 5; //timer interval of 10 secs
+    inter_timer.it_interval.tv_usec = 0;
+    inter_timer.it_value.tv_sec = 5; //time expiration of 10 secs
+    inter_timer.it_value.tv_usec = 0;
+
+    //arming the timer, choosing wall clock, not storing in old_value
+    int tm_ret = setitimer(ITIMER_REAL, &inter_timer, NULL);
+    if(tm_ret == -1){
+        printf("timer error:%s\n",strerror(errno));
+        syslog(LOG_DEBUG,"timer error:%s",strerror(errno));
+    }
+
+
    
     // 1. create a socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0); 
