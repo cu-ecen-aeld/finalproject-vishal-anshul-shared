@@ -10,12 +10,13 @@
 #include <unistd.h>
 #include <time.h>
 
-class Layouts : public QWidget
+
+class Components : public QWidget
 {
     Q_OBJECT
 
 public:
-    Layouts();
+    Components();
 
 public slots:
 

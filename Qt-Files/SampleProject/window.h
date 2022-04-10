@@ -9,26 +9,27 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-class Layouts;
-class QPushButton;
+class Components;
 
 /*
 * Window class definition for handling main GUI window
 *
 */
 
-class AesdWindow : public QWidget
+class Window : public QWidget
 {
     Q_OBJECT
 
 public slots:
+    void handle_button1();
+    void handle_button2();
 
 public:
-    AesdWindow();
+    Window();
 
 private:
-    Layouts *layouts;
-    QPushButton *m_button;
+    Components *components;
+
 };
 
 #endif // WINDOW_H

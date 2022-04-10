@@ -16,15 +16,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    aesdwindow.cpp \
-    layout.cpp \
+    components.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    window.cpp
 
 HEADERS += \
-    aesdwindow.h \
-    layout.h \
-    mainwindow.h
+    components.h \
+    mainwindow.h \
+    window.h
 
 FORMS += \
     mainwindow.ui

@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QWidget>
 
-class Layouts;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -19,7 +18,6 @@ public:
     ~MainWindow();
 
 private:
-    Layouts *layouts;
     Ui::MainWindow *ui;
 };
 #endif // MAINWINDOW_H
