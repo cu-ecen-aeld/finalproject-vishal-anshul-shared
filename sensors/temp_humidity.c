@@ -11,10 +11,11 @@
 #include <fcntl.h>
 #include <syslog.h>
 #include <unistd.h>
+#include <errno.h>
 
 int main()
 {	
-	//TODO: errno
+	//TODO: errnum
 	int ret_val =0;
 	int i2c_fd;
 	char *i2c_filename = "/dev/i2c-1"; //TODO: Cross check this in /dev on BBB
