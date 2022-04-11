@@ -92,6 +92,52 @@ int main()
 	syslog(LOG_DEBUG, "Temperature in celcius: %d", (int)temp_celcius);
 	printf("Temperature in celcius: %d", (int)temp_celcius);
 	
+	/**************************************************
+	*
+	*   Humidity
+	*
+	***************************************************/
+	reg = 0xE5;
+	
+	ret_val = write(i2c_fd, &reg, 1);
+	if(ret_val != 1)
+	{
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to temp sensor\n\r");
+		printf("Call to write() failed. Error in writing to temp sensor\n\r");
+		return -1;
+	}
+	else
+	{
+		printf("Call to write() successful.\n\r");
+	}
+	
+	usleep(11000); //wait for atleast 10.8ms
+	if(errno)
+	{
+		syslog(LOG_ERR, "Call to usleep() failed\n\r");
+		printf("Call to usleep() failed\n\r");
+	}
+	
+	ret_val = read(i2c_fd, buf, n);
+	if(ret_val != n)
+	{
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from temp sensor\n\r");
+		printf("Call to read() failed. Error in reading from temp sensor\n\r");
+		return -1;
+	}
+	else
+	{
+		printf("Call to read() successful.\n\r");
+	}
+	
+	int relative_humidity_raw = buf[0];
+	relative_humidity_raw = relative_humidity_raw<<8;
+	relative_humidity_raw |= buf[1];
+	
+	int rel_humidity = ((125*relative_humidity_raw)/65536) - 6;
+	syslog(LOG_DEBUG, "Relative Humidity: %d", (int)rel_humidity);
+	printf("Relative Humidity: %d", (int)rel_humidity);
+	
 	return 0;
 	
 	
