@@ -61,6 +61,13 @@ int main()
 		printf("Call to write() successful.\n\r");
 	}
 	
+	usleep(11000); //wait for atleast 10.8ms
+	if(errno)
+	{
+		syslog(LOG_ERR, "Call to usleep() failed\n\r");
+		printf("Call to usleep() failed\n\r");
+	}
+	
 	int  n = 2;
 	char buf[n];
 	
