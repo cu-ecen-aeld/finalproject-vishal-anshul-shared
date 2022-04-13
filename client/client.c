@@ -14,6 +14,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <string.h>
+#include <pthread.h>
 
 //#define SERVICE_PORT "8080"
 #define SIZE 80
@@ -23,6 +24,7 @@
 int socket_fd =0;
 
 char *file_path = "/var/tmp/csocket-data.txt";
+pthread_mutex_t mutex_lock = PTHREAD_MUTEX_INITIALIZER;
 
 /*struct addrinfo hints;
 struct addrinfo *servinfo;
@@ -49,6 +51,13 @@ void func(int sockfd)
         printf("From Server : %s\n\r", buffer);
 
         /*Open the file for writing*/
+
+        int m_ret = pthread_mutex_lock(&mutex_lock);
+		if(m_ret){
+			printf("Mutex lock error before write!\n");
+			exit(EXIT_FAILURE);
+		}
+
 	    int fd = open(file_path, O_TRUNC | O_WRONLY | O_CREAT, 0644);
 		if(fd == -1){
 			printf("File open error for appending\n");
@@ -69,6 +78,13 @@ void func(int sockfd)
 		}
 
     	close(fd);
+
+    	m_ret = pthread_mutex_unlock(&mutex_lock);
+		if(m_ret){
+		printf("Mutex unlock error after write!\n");
+		exit(EXIT_FAILURE);
+		}
+
     }
 
 }
@@ -120,6 +136,8 @@ int setup_comm()
 
 int main()
 {
+
+	pthread_mutex_init(&mutex_lock, NULL);
 
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 
