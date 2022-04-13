@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <time.h>
 
+class QLabel;
+
 
 class Components : public QWidget
 {
@@ -19,10 +21,10 @@ public:
     Components();
 
 public slots:
-
+    void SloTempChanged(float temp);
 
 private:
-
+    QLabel *temp_v;
 
 };
 

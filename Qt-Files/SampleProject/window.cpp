@@ -53,6 +53,11 @@ void Window::handle_button1(){
 
 }
 
+void Window::SloTempChanged(float temp)
+{
+    components->SloTempChanged(temp);
+}
+
 void Window::handle_button2(){
 
 }

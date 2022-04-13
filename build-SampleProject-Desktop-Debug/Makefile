@@ -53,16 +53,20 @@ OBJECTS_DIR   = ./
 ####### Files
 
 SOURCES       = ../Qt-Files/SampleProject/components.cpp \
+		../Qt-Files/SampleProject/file-reader.cpp \
 		../Qt-Files/SampleProject/main.cpp \
 		../Qt-Files/SampleProject/mainwindow.cpp \
 		../Qt-Files/SampleProject/window.cpp moc_components.cpp \
+		moc_file-reader.cpp \
 		moc_mainwindow.cpp \
 		moc_window.cpp
 OBJECTS       = components.o \
+		file-reader.o \
 		main.o \
 		mainwindow.o \
 		window.o \
 		moc_components.o \
+		moc_file-reader.o \
 		moc_mainwindow.o \
 		moc_window.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
@@ -121,6 +125,7 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		../Qt-Files/SampleProject/.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -141,8 +146,10 @@ DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		../Qt-Files/Qt-Files/SampleProject/SampleProject.pro ../Qt-Files/SampleProject/components.h \
+		../Qt-Files/SampleProject/file-reader.h \
 		../Qt-Files/SampleProject/mainwindow.h \
 		../Qt-Files/SampleProject/window.h ../Qt-Files/SampleProject/components.cpp \
+		../Qt-Files/SampleProject/file-reader.cpp \
 		../Qt-Files/SampleProject/main.cpp \
 		../Qt-Files/SampleProject/mainwindow.cpp \
 		../Qt-Files/SampleProject/window.cpp
@@ -213,6 +220,7 @@ Makefile: ../Qt-Files/SampleProject/SampleProject.pro /usr/lib/x86_64-linux-gnu/
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf \
@@ -290,6 +298,7 @@ Makefile: ../Qt-Files/SampleProject/SampleProject.pro /usr/lib/x86_64-linux-gnu/
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/qt_config.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exclusive_builds.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/toolchain.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/default_pre.prf:
@@ -325,8 +334,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../Qt-Files/SampleProject/components.h ../Qt-Files/SampleProject/mainwindow.h ../Qt-Files/SampleProject/window.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../Qt-Files/SampleProject/components.cpp ../Qt-Files/SampleProject/main.cpp ../Qt-Files/SampleProject/mainwindow.cpp ../Qt-Files/SampleProject/window.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../Qt-Files/SampleProject/components.h ../Qt-Files/SampleProject/file-reader.h ../Qt-Files/SampleProject/mainwindow.h ../Qt-Files/SampleProject/window.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../Qt-Files/SampleProject/components.cpp ../Qt-Files/SampleProject/file-reader.cpp ../Qt-Files/SampleProject/main.cpp ../Qt-Files/SampleProject/mainwindow.cpp ../Qt-Files/SampleProject/window.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../Qt-Files/SampleProject/mainwindow.ui $(DISTDIR)/
 
 
@@ -359,13 +368,18 @@ compiler_moc_predefs_clean:
 moc_predefs.h: /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 	g++ -pipe -g -std=gnu++11 -Wall -W -dM -E -o moc_predefs.h /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp
 
-compiler_moc_header_make_all: moc_components.cpp moc_mainwindow.cpp moc_window.cpp
+compiler_moc_header_make_all: moc_components.cpp moc_file-reader.cpp moc_mainwindow.cpp moc_window.cpp
 compiler_moc_header_clean:
-	-$(DEL_FILE) moc_components.cpp moc_mainwindow.cpp moc_window.cpp
+	-$(DEL_FILE) moc_components.cpp moc_file-reader.cpp moc_mainwindow.cpp moc_window.cpp
 moc_components.cpp: ../Qt-Files/SampleProject/components.h \
 		moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/vishalraj/Qt_Projects/build-SampleProject-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/vishalraj/Qt_Projects/Qt-Files/SampleProject -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../Qt-Files/SampleProject/components.h -o moc_components.cpp
+
+moc_file-reader.cpp: ../Qt-Files/SampleProject/file-reader.h \
+		moc_predefs.h \
+		/usr/lib/qt5/bin/moc
+	/usr/lib/qt5/bin/moc $(DEFINES) --include /home/vishalraj/Qt_Projects/build-SampleProject-Desktop-Debug/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/home/vishalraj/Qt_Projects/Qt-Files/SampleProject -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../Qt-Files/SampleProject/file-reader.h -o moc_file-reader.cpp
 
 moc_mainwindow.cpp: ../Qt-Files/SampleProject/mainwindow.h \
 		moc_predefs.h \
@@ -401,6 +415,9 @@ compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_ui
 components.o: ../Qt-Files/SampleProject/components.cpp ../Qt-Files/SampleProject/components.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o components.o ../Qt-Files/SampleProject/components.cpp
 
+file-reader.o: ../Qt-Files/SampleProject/file-reader.cpp ../Qt-Files/SampleProject/file-reader.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o file-reader.o ../Qt-Files/SampleProject/file-reader.cpp
+
 main.o: ../Qt-Files/SampleProject/main.cpp ../Qt-Files/SampleProject/window.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../Qt-Files/SampleProject/main.cpp
 
@@ -414,6 +431,9 @@ window.o: ../Qt-Files/SampleProject/window.cpp ../Qt-Files/SampleProject/compone
 
 moc_components.o: moc_components.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_components.o moc_components.cpp
+
+moc_file-reader.o: moc_file-reader.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_file-reader.o moc_file-reader.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

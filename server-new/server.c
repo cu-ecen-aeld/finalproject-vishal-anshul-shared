@@ -19,8 +19,8 @@
 #define SA struct sockaddr
 
 static int timer_up = 0;
-char sensor_data[] = "temp:15.4 ^C\n";
- 
+char *sensor_data[] = {"15.4","15.5","15.6","16.12","17.54","18.12","14.13","17.84"};
+
 /***********************************************************************************************
 * Name          : func
 * Description   : function for server- client communication 
@@ -33,14 +33,24 @@ void func(int sockfd)
  
     while(1) 
     {
-    	//printf("timer_up:%d\r\n",timer_up);
-        //if(timer_up){
+    	
+         for(int i = 0; i < 8; i++){   
+            
             printf("Inside socket send!\n\r");
-            rt = write(sockfd, sensor_data, sizeof(sensor_data)); // send the message to client
+            rt = write(sockfd, sensor_data[i], sizeof(sensor_data[i])); // send the message to client
             printf("sent bytes:%d\r\n",rt);
             timer_up = 0;
             printf("timer_up_0:%d\r\n",timer_up);
-        //}
+
+            //delay
+            for(int i=0;i<10000;i++){
+                for(int j=0;j<100000;j++){
+                    ;
+                }
+            }
+
+        }
+
     }
 }
 

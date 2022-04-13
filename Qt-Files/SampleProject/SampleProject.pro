@@ -17,12 +17,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     components.cpp \
+    file-reader.cpp \
     main.cpp \
     mainwindow.cpp \
     window.cpp
 
 HEADERS += \
     components.h \
+    file-reader.h \
     mainwindow.h \
     window.h
 

@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#include <string.h>
 
 //#define SERVICE_PORT "8080"
 #define SIZE 80
@@ -20,6 +21,8 @@
 #define SA struct sockaddr
 
 int socket_fd =0;
+
+char *file_path = "/var/tmp/csocket-data.txt";
 
 /*struct addrinfo hints;
 struct addrinfo *servinfo;
@@ -37,11 +40,37 @@ int ret_val;
 void func(int sockfd)
 {
     char buffer[SIZE];
+	memset(buffer, 0 , sizeof(buffer));
+
     while(1) {
+
         bzero(buffer, sizeof(buffer));
         while(read(sockfd, buffer, sizeof(buffer))==0);  // read client message and copy that in the buffer
         printf("From Server : %s\n\r", buffer);
+
+        /*Open the file for writing*/
+	    int fd = open(file_path, O_TRUNC | O_WRONLY | O_CREAT, 0644);
+		if(fd == -1){
+			printf("File open error for appending\n");
+			perror("File_Open:");
+			exit(EXIT_FAILURE);
+		}
+
+        /*Write data to the file*/
+        int nr = write(fd,buffer,strlen(buffer));
+		if(nr == -1){
+			printf("Error: File could not be written!\n");
+			//syslog(LOG_ERR,"Error: File could not be written!");
+			exit(EXIT_FAILURE);
+		}else if(nr != strlen(buffer)){
+			printf("Error: File partially written!\n");
+			//syslog(LOG_ERR,"Error: File partially written!");
+			exit(EXIT_FAILURE);
+		}
+
+    	close(fd);
     }
+
 }
 
 int setup_comm()
@@ -91,6 +120,7 @@ int setup_comm()
 
 int main()
 {
+
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 
     

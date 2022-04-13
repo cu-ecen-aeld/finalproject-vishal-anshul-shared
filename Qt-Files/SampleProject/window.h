@@ -23,6 +23,7 @@ class Window : public QWidget
 public slots:
     void handle_button1();
     void handle_button2();
+    void SloTempChanged(float temp);
 
 public:
     Window();

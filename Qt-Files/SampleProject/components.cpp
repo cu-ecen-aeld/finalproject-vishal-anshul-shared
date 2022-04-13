@@ -13,16 +13,30 @@ Components::Components(){
     app_name->setFont(s);
     app_name->setAlignment(Qt::AlignCenter);
 
-    /*Test buttons*/
-    QPushButton *button1 = new QPushButton("Button-1");
-    QPushButton *button2 = new QPushButton("Button-2");
-    button1->setStyleSheet("background-color:yellow");
-    button2->setStyleSheet("background-color:pink");
+    /*Temp sensor label*/
+    QLabel *temp_label = new QLabel(tr("Temperature value:"));
+    QFont t = temp_label->font();
+    t.setPointSize(12);
+    temp_label->setFont(t);
+    temp_label->setAlignment(Qt::AlignCenter);
 
-    /*Add and set widget*/
-    vlayout->addWidget(button1);
-    vlayout->addWidget(button2);
+    /*Temp value label*/
+    temp_v = new  QLabel(tr("Test"));
+    temp_v->setFont(t);
+    temp_v->setAlignment(Qt::AlignCenter);
+
+    /*Add widgets*/
     vlayout->addWidget(app_name);
+    vlayout->addWidget(temp_label);
+    vlayout->addWidget(temp_v);
 
     setLayout(vlayout);
 }
+
+void Components::SloTempChanged(float temp)
+{
+    /*convert temperature from float to string
+     * as QLabel needs a string*/
+    temp_v->setText(QString::number(temp, 'f', 2));
+}
+
