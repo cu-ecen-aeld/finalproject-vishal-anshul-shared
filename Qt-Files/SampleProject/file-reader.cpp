@@ -26,5 +26,5 @@ void FileReader::timerHandler()
 
     emit SigTempChanged(temp);
 
-    //file.close();
+    //test->file.close();
 }
