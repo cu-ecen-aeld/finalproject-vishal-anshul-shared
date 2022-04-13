@@ -12,13 +12,22 @@
 #include <errno.h>
 #include <time.h>
 #include <sys/time.h>
+#include <pthread.h>
 
 
 #define SIZE 80
 #define PORT 8080
 #define SA struct sockaddr
 
-static int timer_up = 0;
+typedef struct thread_info thread_info_t;
+struct thread_info
+{
+	pthread_t thread_id;
+	int terminate_thread_flag;
+};
+
+int sockfd, connfd, len;
+//static int timer_up = 0;
 char *sensor_data[] = {"15.4","15.5","15.6","16.12","17.54","18.12","14.13","17.84"};
 
 /***********************************************************************************************
@@ -37,17 +46,15 @@ void func(int sockfd)
 		printf("Inside socket send!\n\r");
 		rt = write(sockfd, sensor_data[i], sizeof(sensor_data[i])); // send the message to client
 		printf("sent bytes:%d\r\n",rt);
-		timer_up = 0;
-		printf("timer_up_0:%d\r\n",timer_up);
 
 		//delay
-		for(int i=0;i<10000;i++)
+		/*for(int i=0;i<10000;i++)
 		{
 			for(int j=0;j<100000;j++)
 			{
 				;
 			}
-		}
+		}*/
 
 	}
 
@@ -83,8 +90,7 @@ static void timer_handler(int sig_no){
 
     printf("time value:%s\n",time_string);
 
-    timer_up = 1;
-    printf("timer_up_1:%d\r\n",timer_up);
+    func(connfd);
 
 } 
         
@@ -96,7 +102,6 @@ static void timer_handler(int sig_no){
 ***********************************************************************************************/
 int main()
 {
-    int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
 
     /*Registering SIGARM */
@@ -183,11 +188,7 @@ int main()
     //5. Call to function for server- client communication
     while(1)
     {
-    	if(timer_up)
-    	{
-    		func(connfd);
-    		timer_up = 0;
-    	}
+		;
     }
     
     //6. Close the socket
