@@ -1,25 +1,43 @@
+/*
+
+Author: Anshul Somani
+Date: April 5 2022
+Description: This code is used to read temperature and humidity values from Si7021 sensor breakout board	
+			 from sparkfun. It reads both the values in no master hold mode and when the sensor is connected 
+			 to the I2C-1 bus on BeagleBone Black. It then sends the sensor data from the server(BBB) to
+			 the client (RPi). 
+			 This code was used to test the server functionality for AESD final project Spring 2022
+			 
+This file uses server code written by Vishal Raj to implement Server socket communication.
+
+*/
+
 #include <netdb.h>
-#include <stdio.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sys/socket.h>
-#include <signal.h>
+
 #include <syslog.h>
 #include <errno.h>
+
 #include <time.h>
 #include <sys/time.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
+#include <fcntl.h>
 
 
 #define SIZE 80
 #define PORT 8080
 #define SA struct sockaddr
 
-static int timer_up = 0;
-char *sensor_data[] = {"15.4","15.5","15.6","16.12","17.54","18.12","14.13","17.84"};
 
 /***********************************************************************************************
 * Name          : func
@@ -27,31 +45,86 @@ char *sensor_data[] = {"15.4","15.5","15.6","16.12","17.54","18.12","14.13","17.
 * Parameters    : sockfd
 * RETURN        : N/A
 ***********************************************************************************************/
-void func(int sockfd)
+
+float temp_RH_sensor(void)
 {
-    int rt = 0;
-    	
-	for(int i = 0; i < 8; i++)
-	{   
-
-		printf("Inside socket send!\n\r");
-		rt = write(sockfd, sensor_data[i], sizeof(sensor_data[i])); // send the message to client
-		printf("sent bytes:%d\r\n",rt);
-		timer_up = 0;
-		printf("timer_up_0:%d\r\n",timer_up);
-
-		//delay
-		for(int i=0;i<10000;i++)
-		{
-			for(int j=0;j<100000;j++)
-			{
-				;
-			}
-		}
-
+	//TODO: use errno
+	int ret_val =0;
+	int i2c_fd;
+	char *i2c_filename = "/dev/i2c-1"; 
+	
+	i2c_fd = open(i2c_filename, O_RDWR);
+	if(i2c_fd <0)
+	{
+		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1\n\r");
+		printf("Call to open() failed. Error in accessing /dev/i2c-1\n\r");
+		return -1;
 	}
-
-    
+	else
+	{
+		printf("Call to open() successful.\n\r");
+	}
+	
+	//TODO: define the address as macros
+	int sensor_addr = 0x40;
+	
+	ret_val = ioctl(i2c_fd, I2C_SLAVE, sensor_addr);
+	if(ret_val <0)
+	{
+		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address\n\r");
+		printf("Call to ioctl() failed. Error in setting sensor address\n\r");
+		return -1;
+	}
+	else
+	{
+		printf("Call to ioctl() successful.\n\r");
+	}
+	
+	int reg = 0xF3;
+	
+	ret_val = write(i2c_fd, &reg, 1);
+	if(ret_val != 1)
+	{
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to temp sensor\n\r");
+		printf("Call to write() failed. Error in writing to temp sensor\n\r");
+		return -1;
+	}
+	else
+	{
+		printf("Call to write() successful.\n\r");
+	}
+	
+	usleep(11000); //wait for atleast 10.8ms
+	if(errno)
+	{
+		syslog(LOG_ERR, "Call to usleep() failed\n\r");
+		printf("Call to usleep() failed\n\r");
+	}
+	
+	int  n = 2;
+	char buf[n];
+	
+	ret_val = read(i2c_fd, buf, n);
+	if(ret_val != n)
+	{
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from temp sensor\n\r");
+		printf("Call to read() failed. Error in reading from temp sensor\n\r");
+		return -1;
+	}
+	else
+	{
+		printf("Call to read() successful.\n\r");
+	}
+	
+	int temp = buf[0];
+	temp = temp<<8;
+	temp |= buf[1];
+	
+	float temp_celcius = ((175.72*temp)/65536) - 46.85;
+	syslog(LOG_DEBUG, "Temperature in celcius: %f", (float)temp_celcius);
+	printf("Temperature in celcius: %f", (float)temp_celcius);
+	
+	return temp_celcius;
 }
 
 /***********************************************************************************************
@@ -60,13 +133,14 @@ void func(int sockfd)
 * Parameters    : signal no.
 * RETURN        : N/A
 ***********************************************************************************************/
-static void timer_handler(int sig_no){
+/*static void timer_handler(int sig_no){
 
-    /*first store the local time in a buffer*/
+    //first store the local time in a buffer
     char time_string[200];
     time_t ti;
     struct tm *tm_ptr;
     int timer_len = 0;
+     
 
     ti = time(NULL);
     tm_ptr = localtime(&ti);
@@ -86,7 +160,7 @@ static void timer_handler(int sig_no){
     timer_up = 1;
     printf("timer_up_1:%d\r\n",timer_up);
 
-} 
+} */
         
  /***********************************************************************************************
 * Name          : Main
@@ -98,12 +172,14 @@ int main()
 {
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
-
+    
+    float temp_data;
+    
     /*Registering SIGARM */
-    signal(SIGALRM,timer_handler);
+    //signal(SIGALRM,timer_handler);
 
     /*Timer handler part*/
-    struct itimerval inter_timer;
+   /*struct itimerval inter_timer;
 
     inter_timer.it_interval.tv_sec = 5; //timer interval of 10 secs
     inter_timer.it_interval.tv_usec = 0;
@@ -115,7 +191,7 @@ int main()
     if(tm_ret == -1){
         printf("timer error:%s\n",strerror(errno));
         syslog(LOG_DEBUG,"timer error:%s",strerror(errno));
-    }
+    }*/
 
 
    
@@ -180,16 +256,35 @@ int main()
         printf("accept() socket succeeded\n");
     }
    
+   int rt = 0;
+   int length = 0;
    printf("Enter while()\n");
     //5. Call to function for server- client communication
     while(1)
     {
-    	if(timer_up)
+    	temp_data = temp_RH_sensor();
+    	
+    	length = snprintf(NULL, 0, "%f", temp_data);
+    	char *str = malloc(length+1);
+    	snprintf(str, length+1, "%f", temp_data);
+    	
+    	
+    	printf("Sending temp data\n");
+    	rt = write(sockfd, str, strlen(str)); // send the message to client
+    	if(rt < 0)
     	{
-    		func(connfd);
-    		timer_up = 0;
-    		printf("timer_up 0: main()\n");
-    	}
+            perror("Server_Error:");
+        }
+        else if(rt != strlen(str))
+        {
+            printf("partial sent bytes:%d\r\n",rt);
+        }
+
+        printf("sent bytes:%d\r\n",rt);
+        free(str);
+        
+    	sleep(10);
+
     }
     printf("Exit while()\n");
     

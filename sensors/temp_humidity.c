@@ -1,6 +1,11 @@
 /*
 
-//TODO: Header with author, description, etc
+Author: Anshul Somani
+Date: April 5 2022
+Description: This code is used to read temperature and humidity values from Si7021 sensor breakout board	
+			 from sparkfun. It reads both the values in no master hold mode and when the sensor is connected 
+			 to the I2C-1 bus on BeagleBone Black. 
+			 This code was used to test the I2C interfacing with the sensor for AESD final project Spring 2022
 
 */
 
@@ -18,7 +23,7 @@ int main()
 	//TODO: errnum
 	int ret_val =0;
 	int i2c_fd;
-	char *i2c_filename = "/dev/i2c-1"; //TODO: Cross check this in /dev on BBB
+	char *i2c_filename = "/dev/i2c-1"; 
 	
 	i2c_fd = open(i2c_filename, O_RDWR);
 	if(i2c_fd <0)
