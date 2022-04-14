@@ -180,6 +180,7 @@ int main()
         printf("accept() socket succeeded\n");
     }
    
+   printf("Enter while()\n");
     //5. Call to function for server- client communication
     while(1)
     {
@@ -187,8 +188,10 @@ int main()
     	{
     		func(connfd);
     		timer_up = 0;
+    		printf("timer_up 0: main()\n");
     	}
     }
+    printf("Exit while()\n");
     
     //6. Close the socket
     close(sockfd);
