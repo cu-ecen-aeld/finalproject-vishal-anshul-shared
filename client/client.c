@@ -139,6 +139,8 @@ int main()
 
 	pthread_mutex_init(&mutex_lock, NULL);
 
+	printf("***Starting client program Version 10.36...***\n");
+
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 
     
