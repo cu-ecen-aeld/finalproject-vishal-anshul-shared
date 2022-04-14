@@ -270,7 +270,7 @@ int main()
     	
     	
     	printf("Sending temp data\n");
-    	rt = write(sockfd, str, strlen(str)); // send the message to client
+    	rt = write(connfd, str, strlen(str)); // send the message to client
     	if(rt < 0)
     	{
             perror("Server_Error:");
