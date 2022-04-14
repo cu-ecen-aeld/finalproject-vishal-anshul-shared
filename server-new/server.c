@@ -18,6 +18,8 @@
 #define PORT 8080
 #define SA struct sockaddr
 
+//#define SIGALRM_HANDLER     1
+
 static int timer_up = 0;
 char *sensor_data[] = {"15.4","15.5","15.6","16.12","17.54","18.12","14.13","17.84"};
 
@@ -36,18 +38,28 @@ void func(int sockfd)
     	
          for(int i = 0; i < 8; i++){   
             
-            printf("Inside socket send!\n\r");
-            rt = write(sockfd, sensor_data[i], sizeof(sensor_data[i])); // send the message to client
+            rt = write(sockfd, sensor_data[i], strlen(sensor_data[i])); // send the message to client
+            if(rt < 0){
+                perror("Server_Error:");
+                return;
+            }else if(rt != strlen(sensor_data[i])){
+                printf("partial sent bytes:%d\r\n",rt);
+            }
+
             printf("sent bytes:%d\r\n",rt);
+
             timer_up = 0;
-            printf("timer_up_0:%d\r\n",timer_up);
+            
+            sleep(3);
 
             //delay
-            for(int i=0;i<10000;i++){
-                for(int j=0;j<100000;j++){
-                    ;
-                }
-            }
+            // for(int i=0;i<100000;i++){
+            //     for(int j=0;j<100000;j++){
+            //         ;
+            //     }
+            // }
+
+
 
         }
 
@@ -60,6 +72,7 @@ void func(int sockfd)
 * Parameters    : signal no.
 * RETURN        : N/A
 ***********************************************************************************************/
+#ifdef SIGALRM_HANDLER
 static void timer_handler(int sig_no){
 
     /*first store the local time in a buffer*/
@@ -87,7 +100,7 @@ static void timer_handler(int sig_no){
     printf("timer_up_1:%d\r\n",timer_up);
 
 } 
-        
+#endif       
  /***********************************************************************************************
 * Name          : Main
 * Description   : Entry point function
@@ -98,6 +111,10 @@ int main()
 {
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
+
+    printf("***Starting Server program Version SLEEP...***\n");
+
+    #ifdef SIGALRM_HANDLER
 
     /*Registering SIGARM */
     signal(SIGALRM,timer_handler);
@@ -117,7 +134,7 @@ int main()
         syslog(LOG_DEBUG,"timer error:%s",strerror(errno));
     }
 
-
+    #endif
    
     // 1. create a socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0); 
