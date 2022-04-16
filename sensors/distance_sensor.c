@@ -216,6 +216,63 @@ int main()
 	}
 	
 	
+	/* Start App0 */
+	memset(&buf[0], 0, 15);
+	buf[0] = 0x08;
+	buf[1] = 0x03;
+	buf[2] = 0x23;
+	buf[3] = 0x00;
+	buf[4] = 0x00;
+	buf[5] = 0x00;
+	buf[6] = 0x64;
+	buf[7] = 0xD8;
+	buf[8] = 0x04;
+	buf[9] = 0x02;
+	
+	ret_val = write(i2c_fd, &buf[0], 10);
+	if(ret_val != 10)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. Started App0 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+		printf("Started App0. Call to write() successful.\n\r");
+	}
+	
+	memset(&buf[0], 0, 15);
+	buf[0] = 0x1D;
+	
+	ret_val = write(i2c_fd, &buf[0], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. Read data %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+		printf("Read data. Call to write() successful.\n\r");
+	}
+	ret_val = read(i2c_fd, &buf[1], 10);
+	if(ret_val != 10)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
+		printf("Call to read() failed. Error in reading from distance sensor. Read data %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+		for(int i = 1; i<=10; i++)
+		{
+			printf("Call to read() successful. Read data: %d\n\r", buf[i]);	
+		}
+			
+	}
 	
 	return 0;
 	
