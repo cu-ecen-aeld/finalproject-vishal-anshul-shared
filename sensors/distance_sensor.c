@@ -92,7 +92,7 @@ int main()
 	buf[0] = 0x1E;
 	buf[1] = 0x00;
 	
-	while(buf[1] == 0x00)
+	//while(buf[1] == 0x00)
 	{
 		ret_val = write(i2c_fd, &buf[0], 1);
 		if(ret_val != 1)
