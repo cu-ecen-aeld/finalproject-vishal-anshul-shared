@@ -20,7 +20,7 @@ Description: This code is used to read temperature and humidity values from Si70
 
 int main()
 {	
-	//TODO: errnum
+	int errnum
 	int ret_val =0;
 	int i2c_fd;
 	char *i2c_filename = "/dev/i2c-1"; 
@@ -28,8 +28,9 @@ int main()
 	i2c_fd = open(i2c_filename, O_RDWR);
 	if(i2c_fd <0)
 	{
+		errnum = errno;
 		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1\n\r");
-		printf("Call to open() failed. Error in accessing /dev/i2c-1\n\r");
+		printf("Call to open() failed. Error in accessing /dev/i2c-1 %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -44,8 +45,9 @@ int main()
 	ret_val = ioctl(i2c_fd, I2C_SLAVE, sensor_addr);
 	if(ret_val <0)
 	{
+		errnum = errno;
 		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address\n\r");
-		printf("Call to ioctl() failed. Error in setting sensor address\n\r");
+		printf("Call to ioctl() failed. Error in setting sensor address %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -62,8 +64,9 @@ int main()
 	ret_val = write(i2c_fd, &reg, 2);
 	if(ret_val != 1)
 	{
+		errnum = errno;
 		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
-		printf("Call to write() failed. Error in writing to distance sensor. Factory Calibration\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. Factory Calibration %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -74,8 +77,9 @@ int main()
 	sleep(3); //Sleep for 3s to complete calibration
 	if(errno)
 	{
+		errnum = errno;
 		syslog(LOG_ERR, "Call to sleep() failed\n\r");
-		printf("Call to sleep() failed\n\r");
+		printf("Call to sleep() failed %d\n\r", errnum);
 	}
 	
 	int  n = 15;
@@ -91,8 +95,9 @@ int main()
 		ret_val = write(i2c_fd, &buf[0], 1);
 		if(ret_val != 1)
 		{
+			errnum = errno;
 			syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
-			printf("Call to write() failed. Error in writing to distance sensor. Factory Calibration 0x1E\n\r");
+			printf("Call to write() failed. Error in writing to distance sensor. Factory Calibration 0x1E %d\n\r", errnum);
 			return -1;
 		}
 		else
@@ -103,8 +108,9 @@ int main()
 		ret_val = read(i2c_fd, &buf[1], 1);
 		if(ret_val != n)
 		{
+			errnum = errno;
 			syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
-			printf("Call to read() failed. Error in reading from distance sensor. Factory Calibration Read from 0x1E\n\r");
+			printf("Call to read() failed. Error in reading from distance sensor. Factory Calibration Read from 0x1E %d\n\r", errnum);
 			return -1;
 		}
 		else
@@ -120,8 +126,9 @@ int main()
 	ret_val = write(i2c_fd, &buf[0], 1);
 	if(ret_val != 1)
 	{
+		errnum = errno;	
 		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
-		printf("Call to write() failed. Error in writing to distance sensor. Factory Calibration 0x20\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. Factory Calibration 0x20 %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -131,8 +138,9 @@ int main()
 	ret_val = read(i2c_fd, &buf[1], 14);
 	if(ret_val != n)
 	{
+		errnum = errno;
 		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
-		printf("Call to read() failed. Error in reading from distance sensor. Factory Calibration Read from 0x20\n\r");
+		printf("Call to read() failed. Error in reading from distance sensor. Factory Calibration Read from 0x20 %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -151,8 +159,9 @@ int main()
 	ret_val = write(i2c_fd, &buf[0], 1);
 	if(ret_val != 1)
 	{
+		errnum = errno;	
 		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
-		printf("Call to write() failed. Error in writing to distance sensor. Major Version of App0 0x01\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. Major Version of App0 0x01 %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -162,8 +171,9 @@ int main()
 	ret_val = read(i2c_fd, &buf[1], 1);
 	if(ret_val != n)
 	{
+		errnum = errno;	
 		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
-		printf("Call to read() failed. Error in reading from distance sensor. Major Version of App0 Read from 0x01\n\r");
+		printf("Call to read() failed. Error in reading from distance sensor. Major Version of App0 Read from 0x01 %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -181,8 +191,9 @@ int main()
 	ret_val = write(i2c_fd, &buf[0], 1);
 	if(ret_val != 1)
 	{
+		errnum = errno;	
 		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
-		printf("Call to write() failed. Error in writing to distance sensor. Minor and patch revision no of App0 0x12\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. Minor and patch revision no of App0 0x12 %d\n\r", errnum);
 		return -1;
 	}
 	else
@@ -192,8 +203,9 @@ int main()
 	ret_val = read(i2c_fd, &buf[1], 1);
 	if(ret_val != n)
 	{
+		errnum = errno;	
 		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
-		printf("Call to read() failed. Error in reading from distance sensor. Minor and patch revision no of App0 Read from 0x12\n\r");
+		printf("Call to read() failed. Error in reading from distance sensor. Minor and patch revision no of App0 Read from 0x12 %d\n\r", errnum);
 		return -1;
 	}
 	else
