@@ -64,7 +64,7 @@ int main()
 	reg[1] = 0x0A;
 	
 	ret_val = write(i2c_fd, &reg, 2);
-	if(ret_val != 1)
+	if(ret_val != 2)
 	{
 		errnum = errno;
 		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
@@ -108,7 +108,7 @@ int main()
 		}
 		
 		ret_val = read(i2c_fd, &buf[1], 1);
-		if(ret_val != n)
+		if(ret_val != 1)
 		{
 			errnum = errno;
 			syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
@@ -138,7 +138,7 @@ int main()
 		printf("Factory Calibration write to 0x20. Call to write() successful.\n\r");
 	}
 	ret_val = read(i2c_fd, &buf[1], 14);
-	if(ret_val != n)
+	if(ret_val != 14)
 	{
 		errnum = errno;
 		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
@@ -171,7 +171,7 @@ int main()
 		printf("Major Version of App0 write to 0x01. Call to write() successful.\n\r");
 	}
 	ret_val = read(i2c_fd, &buf[1], 1);
-	if(ret_val != n)
+	if(ret_val != 1)
 	{
 		errnum = errno;	
 		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
@@ -203,7 +203,7 @@ int main()
 		printf("Minor and patch revision no of App0 write to 0x12. Call to write() successful.\n\r");
 	}
 	ret_val = read(i2c_fd, &buf[1], 1);
-	if(ret_val != n)
+	if(ret_val != 1)
 	{
 		errnum = errno;	
 		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
