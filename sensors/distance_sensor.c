@@ -18,9 +18,11 @@ Description: This code is used to read temperature and humidity values from Si70
 #include <unistd.h>
 #include <errno.h>
 
+#include <string.h>
+
 int main()
 {	
-	int errnum
+	int errnum;
 	int ret_val =0;
 	int i2c_fd;
 	char *i2c_filename = "/dev/i2c-1"; 
