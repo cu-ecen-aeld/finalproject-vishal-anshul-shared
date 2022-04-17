@@ -8,15 +8,15 @@ ifeq ($(CFLAGS),)
 	CFLAGS= -g -Wall -Werror
 endif
 
-all: socket_client
-default: socket_client
+all: client-test
+default: client-test
 
 
-socket_client.o: socket_client.c
-	$(CC) $(CFLAGS) -c socket_client.c
+client-test.o: client-test.c
+	$(CC) $(CFLAGS) -c client-test.c
 
-socket_client : socket_client.o
-	$(CROSS_COMPILE)$(CC) $(CFLAGS) socket_client.o -o socket_client
+client-test : client-test.o
+	$(CROSS_COMPILE)$(CC) $(CFLAGS) client-test.o -o client-test
 
 clean :
-	rm -f socket_client *.o
+	rm -f client-test *.o

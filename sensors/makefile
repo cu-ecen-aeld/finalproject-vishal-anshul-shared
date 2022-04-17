@@ -1,5 +1,5 @@
 # Author: Anshul Somani
-# Makefile to crosscompile the executable for distance_sensor.c
+# Makefile to crosscompile the executable for temp_humidity.c
 	
 
 ifeq ($(CC),)
@@ -13,17 +13,17 @@ ifeq ($(LDFLAGS),)
 endif
 
 
-all: distance_sensor
+all: temp_humidity
 
-default: distance_sensor
+default: temp_humidity
 
-distance_sensor: distance_sensor.c
-	$(CC) $(CFLAGS) distance_sensor.c -o distance_sensor $(LDFLAGS) 
+temp_humidity: temp_humidity.c
+	$(CC) $(CFLAGS) temp_humidity.c -o temp_humidity $(LDFLAGS) 
 	
 .PHONY: clean	
 
 clean: 
-	 rm -f distance_sensor distance_sensor.o 
+	 rm -f temp_humidity temp_humidity.o 
 	
 
 

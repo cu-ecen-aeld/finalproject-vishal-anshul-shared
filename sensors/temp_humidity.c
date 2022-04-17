@@ -20,7 +20,6 @@ Description: This code is used to read temperature and humidity values from Si70
 
 int main()
 {	
-	//TODO: errnum
 	int ret_val =0;
 	int i2c_fd;
 	char *i2c_filename = "/dev/i2c-1"; 
@@ -28,7 +27,7 @@ int main()
 	i2c_fd = open(i2c_filename, O_RDWR);
 	if(i2c_fd <0)
 	{
-		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1\n\r");
+		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1 \n\r");
 		printf("Call to open() failed. Error in accessing /dev/i2c-1\n\r");
 		return -1;
 	}
@@ -37,9 +36,7 @@ int main()
 		printf("Call to open() successful.\n\r");
 	}
 	
-	//TODO: define the address as macros
 	int sensor_addr = 0x40;
-	//int sensor_addr_write = 0x81;
 	
 	ret_val = ioctl(i2c_fd, I2C_SLAVE, sensor_addr);
 	if(ret_val <0)
