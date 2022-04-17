@@ -274,6 +274,34 @@ int main()
 			
 	}
 	
+	memset(&buf[0], 5, 15);
+	buf[0] = 0x00;
+	
+	ret_val = write(i2c_fd, &buf[0], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. AppID 0x00 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+		printf("AppID write to 0x00. Call to write() successful.\n\r");
+	}
+	ret_val = read(i2c_fd, &buf[1], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
+		printf("Call to read() failed. Error in reading from distance sensor. AppID Read from 0x00 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+			printf("Call to read() successful. AppID Read from 0x00 data: %d\n\r", buf[1]);	
+	}
+	
 	return 0;
 	
 	
