@@ -121,7 +121,7 @@ int main()
 		}
 	}
 	
-	memset(&buf[0], 0, 15);
+	memset(&buf[0], 1, 15);
 	
 	buf[0] = 0x20;
 	
@@ -154,7 +154,7 @@ int main()
 		
 	}
 	
-	memset(&buf[0], 0, 15);
+	memset(&buf[0], 2, 15);
 	
 	buf[0] = 0x01;
 	
@@ -186,7 +186,7 @@ int main()
 	//TODO: memcmp calibration data
 	
 	
-	memset(&buf[0], 0, 15);
+	memset(&buf[0], 3, 15);
 	
 	buf[0] = 0x12;
 	
@@ -217,7 +217,7 @@ int main()
 	
 	
 	/* Start App0 */
-	memset(&buf[0], 0, 15);
+	memset(&buf[0], 4, 15);
 	buf[0] = 0x08;
 	buf[1] = 0x03;
 	buf[2] = 0x23;
@@ -242,7 +242,7 @@ int main()
 		printf("Started App0. Call to write() successful.\n\r");
 	}
 	
-	memset(&buf[0], 0, 15);
+	memset(&buf[0], 5, 15);
 	buf[0] = 0x1D;
 	
 	ret_val = write(i2c_fd, &buf[0], 1);
