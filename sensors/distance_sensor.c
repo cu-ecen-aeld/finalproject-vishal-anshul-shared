@@ -20,8 +20,12 @@ Description: This code is used to read temperature and humidity values from Si70
 
 #include <string.h>
 
+
+
 int main()
 {	
+	int  n = 15;
+	char buf[n];
 	int errnum;
 	int ret_val =0;
 	int i2c_fd;
@@ -57,6 +61,83 @@ int main()
 		printf("Call to ioctl() successful.\n\r");
 	}
 	
+	
+	memset(&buf[0], 5, 15);
+	buf[0] = 0x00;
+	
+	ret_val = write(i2c_fd, &buf[0], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. AppID 0x00 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+		printf("AppID write to 0x00. Call to write() successful.\n\r");
+	}
+	ret_val = read(i2c_fd, &buf[1], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
+		printf("Call to read() failed. Error in reading from distance sensor. AppID Read from 0x00 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+			printf("Call to read() successful. AppID Read from 0x00 data: %d\n\r", buf[1]);	
+	}
+	
+	memset(&buf[0], 5, 15);
+	buf[0] = 0x02;
+	buf[1] = 0xC0;
+	
+	ret_val = write(i2c_fd, &buf[0], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. AppID 0x02 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+		printf("AppID write to 0x00. Call to write() successful.\n\r");
+	}
+	
+	sleep(1);
+	
+	memset(&buf[0], 5, 15);
+	buf[0] = 0x00;
+	
+	ret_val = write(i2c_fd, &buf[0], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
+		printf("Call to write() failed. Error in writing to distance sensor. AppID 0x00 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+		printf("AppID write to 0x00. Call to write() successful.\n\r");
+	}
+	ret_val = read(i2c_fd, &buf[1], 1);
+	if(ret_val != 1)
+	{
+		errnum = errno;	
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
+		printf("Call to read() failed. Error in reading from distance sensor. AppID Read from 0x00 %d\n\r", errnum);
+		return -1;
+	}
+	else
+	{
+			printf("Call to read() successful. AppID Read from 0x00 data: %d\n\r", buf[1]);	
+	}
+
+	
 	char reg[2]; 
 	
 	/* Start Factory Calibration */
@@ -84,8 +165,6 @@ int main()
 		printf("Call to sleep() failed %d\n\r", errnum);
 	}
 	
-	int  n = 15;
-	char buf[n];
 	
 	memset(&buf[0], 0, 15);
 	
@@ -272,34 +351,6 @@ int main()
 			printf("Call to read() successful. Read data: %d\n\r", buf[i]);	
 		}
 			
-	}
-	
-	memset(&buf[0], 5, 15);
-	buf[0] = 0x00;
-	
-	ret_val = write(i2c_fd, &buf[0], 1);
-	if(ret_val != 1)
-	{
-		errnum = errno;	
-		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
-		printf("Call to write() failed. Error in writing to distance sensor. AppID 0x00 %d\n\r", errnum);
-		return -1;
-	}
-	else
-	{
-		printf("AppID write to 0x00. Call to write() successful.\n\r");
-	}
-	ret_val = read(i2c_fd, &buf[1], 1);
-	if(ret_val != 1)
-	{
-		errnum = errno;	
-		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
-		printf("Call to read() failed. Error in reading from distance sensor. AppID Read from 0x00 %d\n\r", errnum);
-		return -1;
-	}
-	else
-	{
-			printf("Call to read() successful. AppID Read from 0x00 data: %d\n\r", buf[1]);	
 	}
 	
 	return 0;
