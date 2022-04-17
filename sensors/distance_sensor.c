@@ -62,6 +62,12 @@ int main()
 	}
 	
 	
+	/*************************************************
+	*
+	* Reading AppID <0x00>
+	*
+	*************************************************/
+	
 	memset(&buf[0], 5, 15);
 	buf[0] = 0x00;
 	
@@ -89,6 +95,13 @@ int main()
 	{
 			printf("Call to read() successful. AppID Read from 0x00 data: %d\n\r", buf[1]);	
 	}
+	
+	
+	/*************************************************
+	*
+	* Writing to AppREQID <0x02> 0xC0 
+	*
+	*************************************************/
 	
 	memset(&buf[0], 5, 15);
 	buf[0] = 0x02;
@@ -109,35 +122,50 @@ int main()
 	
 	sleep(1);
 	
+	/*************************************************
+	*
+	* Reading AppID 0x00
+	*
+	*************************************************/
+	
 	memset(&buf[0], 5, 15);
 	buf[0] = 0x00;
+	buf[1] = 0x00;
 	
-	ret_val = write(i2c_fd, &buf[0], 1);
-	if(ret_val != 1)
+	while(buf[1] == 0x00)
 	{
-		errnum = errno;	
-		syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
-		printf("Call to write() failed. Error in writing to distance sensor. AppID 0x00 %d\n\r", errnum);
-		return -1;
-	}
-	else
-	{
-		printf("AppID write to 0x00. Call to write() successful.\n\r");
-	}
-	ret_val = read(i2c_fd, &buf[1], 1);
-	if(ret_val != 1)
-	{
-		errnum = errno;	
-		syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
-		printf("Call to read() failed. Error in reading from distance sensor. AppID Read from 0x00 %d\n\r", errnum);
-		return -1;
-	}
-	else
-	{
-			printf("Call to read() successful. AppID Read from 0x00 data: %d\n\r", buf[1]);	
+		ret_val = write(i2c_fd, &buf[0], 1);
+		if(ret_val != 1)
+		{
+			errnum = errno;	
+			syslog(LOG_ERR, "Call to write() failed. Error in writing to distance sensor\n\r");
+			printf("Call to write() failed. Error in writing to distance sensor. AppID 0x00 %d\n\r", errnum);
+			return -1;
+		}
+		else
+		{
+			printf("AppID write to 0x00. Call to write() successful.\n\r");
+		}
+		ret_val = read(i2c_fd, &buf[1], 1);
+		if(ret_val != 1)
+		{
+			errnum = errno;	
+			syslog(LOG_ERR, "Call to read() failed. Error in reading from distance sensor\n\r");
+			printf("Call to read() failed. Error in reading from distance sensor. AppID Read from 0x00 %d\n\r", errnum);
+			return -1;
+		}
+		else
+		{
+				printf("Call to read() successful. AppID Read from 0x00 data: %d\n\r", buf[1]);	
+		}
 	}
 
 	
+	/*************************************************
+	*
+	* Initiating Factory Calibration <0x10> 0x0A
+	*
+	*************************************************/
 	char reg[2]; 
 	
 	/* Start Factory Calibration */
@@ -165,6 +193,11 @@ int main()
 		printf("Call to sleep() failed %d\n\r", errnum);
 	}
 	
+	/*************************************************
+	*
+	* Reading <0x1E> to check if calibration complete
+	*
+	*************************************************/
 	
 	memset(&buf[0], 0, 15);
 	
@@ -200,6 +233,12 @@ int main()
 		}
 	}
 	
+	/*************************************************
+	*
+	* Reading Factory Calibration data 0x20
+	*
+	*************************************************/
+	
 	memset(&buf[0], 1, 15);
 	
 	buf[0] = 0x20;
@@ -232,6 +271,12 @@ int main()
 		}
 		
 	}
+
+	/*************************************************
+	*
+	* Reading Major Version of App0 0x01
+	*
+	*************************************************/
 	
 	memset(&buf[0], 2, 15);
 	
@@ -264,6 +309,11 @@ int main()
 	
 	//TODO: memcmp calibration data
 	
+	/*************************************************
+	*
+	* Reading Minor and patch revision no of App0 0x12
+	*
+	*************************************************/
 	
 	memset(&buf[0], 3, 15);
 	
@@ -294,6 +344,11 @@ int main()
 			printf("Call to read() successful. Minor and patch revision no of App0 Read from 0x12 data: %d\n\r", buf[1]);	
 	}
 	
+	/*************************************************
+	*
+	* Starting App0 0x12
+	*
+	*************************************************/
 	
 	/* Start App0 */
 	memset(&buf[0], 4, 15);
@@ -320,6 +375,12 @@ int main()
 	{
 		printf("Started App0. Call to write() successful.\n\r");
 	}
+	
+	/*************************************************
+	*
+	* Reading data
+	*
+	*************************************************/
 	
 	memset(&buf[0], 5, 15);
 	buf[0] = 0x1D;
