@@ -121,7 +121,7 @@ float temp_readings(void)
 	
 	float temp_celcius = ((175.72*temp)/65536) - 46.85;
 	syslog(LOG_DEBUG, "Temperature in celcius: %f", (float)temp_celcius);
-	printf("Temperature in celcius: %f", (float)temp_celcius);
+	printf("Temperature in celcius: %f\n\r", (float)temp_celcius);
 	
 	return temp_celcius;
 }
@@ -208,7 +208,7 @@ float RH_readings(void)
 	
 	float rel_humidity = ((125*relative_humidity_raw)/65536) - 6;
 	syslog(LOG_DEBUG, "Relative Humidity: %f", (float)rel_humidity);
-	printf("Relative Humidity: %f", (float)rel_humidity);
+	printf("Relative Humidity: %f\n\r", (float)rel_humidity);
 	
 	return rel_humidity;
 }
@@ -289,7 +289,9 @@ int main()
     }
    
    int rt = 0;
-   int length = 0;
+   int length1 = 0;
+   int length2 = 0;
+   int total_length = 0;
    char *str1 = "T:";
    char *str2 = ",H:";
    
@@ -300,24 +302,29 @@ int main()
     //5. Call to function for server- client communication
     while(1)
     {
-    
-    	char *str_pkt = "";
     	temp_data = temp_readings();
     	
-    	length = snprintf(NULL, 0, "%f", temp_data);
-    	char *str_temp = malloc(length+1);
-    	snprintf(str_temp, length+1, "%f", temp_data);
+    	length1 = snprintf(NULL, 0, "%f", temp_data);
+    	char *str_temp = malloc(length1+1);
+    	snprintf(str_temp, length1+1, "%f", temp_data);
     	
     	RH_data = RH_readings();
     	
-    	length = snprintf(NULL, 0, "%f", RH_data);
-    	char *str_rh = malloc(length+1);
-    	snprintf(str_rh, length+1, "%f", RH_data);
+    	length2 = snprintf(NULL, 0, "%f", RH_data);
+    	char *str_rh = malloc(length2+1);
+    	snprintf(str_rh, length2+1, "%f", RH_data);
     	printf("int to float conversion done RH\n\r");
     	
+    	total_length = (length1 + length2 +strlen(str1) +strlen(str2));
+    	
+    	char *str_pkt = malloc(total_length+1);
+    	
     	strcat(str_pkt, str1);
+    	printf("1\n\r");
     	strcat(str_pkt, str_temp);
+    	printf("2\n\r");
     	strcat(str_pkt, str2);
+    	printf("3\n\r");
     	strcat(str_pkt, str_rh);
     	
     	
