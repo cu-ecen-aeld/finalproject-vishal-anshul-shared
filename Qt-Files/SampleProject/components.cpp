@@ -24,12 +24,12 @@ Components::Components(){
     QFont t = temp_label->font();
     t.setPointSize(50);
     temp_label->setFont(t);
-    temp_label->setAlignment(Qt::AlignCenter);
+    temp_label->setAlignment(Qt::AlignLeft);
 
     /*Temp value label*/
     temp_v = new  QLabel(tr("Test"));
     temp_v->setFont(t);
-    temp_v->setAlignment(Qt::AlignCenter);
+    temp_v->setAlignment(Qt::AlignLeft);
 
     /*Progress Bar*/
     progressBar = new QProgressBar();
