@@ -187,6 +187,9 @@ float RH_readings(void)
 		printf("Call to usleep() failed\n\r");
 	}
 	
+	int  n = 2;
+	char buf[n];
+	
 	ret_val = read(i2c_fd, buf, n);
 	if(ret_val != n)
 	{
@@ -204,8 +207,8 @@ float RH_readings(void)
 	relative_humidity_raw |= buf[1];
 	
 	float rel_humidity = ((125*relative_humidity_raw)/65536) - 6;
-	syslog(LOG_DEBUG, "Relative Humidity: %d", (float)rel_humidity);
-	printf("Relative Humidity: %d", (float)rel_humidity);
+	syslog(LOG_DEBUG, "Relative Humidity: %f", (float)rel_humidity);
+	printf("Relative Humidity: %f", (float)rel_humidity);
 	
 	return rel_humidity;
 }
@@ -287,6 +290,12 @@ int main()
    
    int rt = 0;
    int length = 0;
+   char *str1 = "T:";
+   char *str2 = ",H:";
+   char *str_pkt = NULL;
+   
+   /* Packet format: T:<temp_data>,H:<RH_data> */
+   
    printf("Enter while()\n");
     //5. Call to function for server- client communication
     while(1)
@@ -294,23 +303,35 @@ int main()
     	temp_data = temp_readings();
     	
     	length = snprintf(NULL, 0, "%f", temp_data);
-    	char *str = malloc(length+1);
-    	snprintf(str, length+1, "%f", temp_data);
+    	char *str_temp = malloc(length+1);
+    	snprintf(str_temp, length+1, "%f", temp_data);
+    	
+    	RH_data = RH_readings();
+    	
+    	length = snprintf(NULL, 0, "%f", RH_data);
+    	char *str_rh = malloc(length+1);
+    	snprintf(str_rh, length+1, "%f", RH_data);
+    	
+    	strcat(str_pkt, str1);
+    	strcat(str_pkt, str_temp);
+    	strcat(str_pkt, str2);
+    	strcat(str_pkt, str_rh);
     	
     	
-    	printf("Sending temp data\n");
-    	rt = write(connfd, str, strlen(str)); // send the message to client
+    	printf("Sending temp data: %s\n", str_pkt);
+    	rt = write(connfd, str_pkt, strlen(str_pkt)); // send the message to client
     	if(rt < 0)
     	{
             perror("Server_Error:");
         }
-        else if(rt != strlen(str))
+        else if(rt != strlen(str_pkt))
         {
             printf("partial sent bytes:%d\r\n",rt);
         }
 
         printf("sent bytes:%d\r\n",rt);
-        free(str);
+        free(str_temp);
+        free(str_rh);
         
     	sleep(10);
 
@@ -319,4 +340,9 @@ int main()
     
     //6. Close the socket
     close(sockfd);
+    
+	free(str1);
+	free(str2);
+	free(str_pkt);
+
 }
