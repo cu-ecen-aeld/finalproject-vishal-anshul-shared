@@ -313,22 +313,16 @@ int main()
     	length2 = snprintf(NULL, 0, "%f", RH_data);
     	char *str_rh = malloc(length2+1);
     	snprintf(str_rh, length2+1, "%f", RH_data);
-    	printf("int to float conversion done RH\n\r");
     	
-    	total_length = (length1 + length2 +strlen(str1) +strlen(str2));
-    	
+    	total_length = (length1 + length2 +strlen(str1) +strlen(str2) -1);
     	char *str_pkt = malloc(total_length+1);
     	
     	strcat(str_pkt, str1);
-    	printf("1\n\r");
     	strcat(str_pkt, str_temp);
-    	printf("2\n\r");
     	strcat(str_pkt, str2);
-    	printf("3\n\r");
     	strcat(str_pkt, str_rh);
-    	
-    	
-    	printf("Sending temp data: %s\n", str_pkt);
+
+    	printf("Sending data: %s\n", str_pkt);
     	rt = write(connfd, str_pkt, strlen(str_pkt)); // send the message to client
     	if(rt < 0)
     	{
