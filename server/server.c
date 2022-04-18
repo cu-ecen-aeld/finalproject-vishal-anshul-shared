@@ -304,17 +304,17 @@ int main()
     {
     	temp_data = temp_readings();
     	
-    	length1 = snprintf(NULL, 0, "%f", temp_data);
+    	length1 = snprintf(NULL, 0, "%0.2f", temp_data);
     	char *str_temp = malloc(length1+1);
-    	snprintf(str_temp, length1+1, "%f", temp_data);
+    	snprintf(str_temp, length1+1, "%0.2f", temp_data);
     	
     	RH_data = RH_readings();
     	
-    	length2 = snprintf(NULL, 0, "%f", RH_data);
+    	length2 = snprintf(NULL, 0, "%0.2f", RH_data);
     	char *str_rh = malloc(length2+1);
-    	snprintf(str_rh, length2+1, "%f", RH_data);
+    	snprintf(str_rh, length2+1, "%0.2f", RH_data);
     	
-    	total_length = (length1 + length2 +strlen(str1) +strlen(str2) -1);
+    	total_length = (length1 + length2 +strlen(str1) +strlen(str2) -2);
     	char *str_pkt = malloc(total_length+1);
     	
     	strcat(str_pkt, str1);
