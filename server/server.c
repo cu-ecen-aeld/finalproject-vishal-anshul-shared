@@ -292,7 +292,7 @@ int main()
    int length = 0;
    char *str1 = "T:";
    char *str2 = ",H:";
-   char *str_pkt = NULL;
+   
    
    /* Packet format: T:<temp_data>,H:<RH_data> */
    
@@ -300,6 +300,8 @@ int main()
     //5. Call to function for server- client communication
     while(1)
     {
+    
+    	char *str_pkt = NULL;
     	temp_data = temp_readings();
     	
     	length = snprintf(NULL, 0, "%f", temp_data);
@@ -332,6 +334,7 @@ int main()
         printf("sent bytes:%d\r\n",rt);
         free(str_temp);
         free(str_rh);
+        free(str_pkt);
         
     	sleep(10);
 
@@ -343,6 +346,6 @@ int main()
     
 	free(str1);
 	free(str2);
-	free(str_pkt);
+	
 
 }
