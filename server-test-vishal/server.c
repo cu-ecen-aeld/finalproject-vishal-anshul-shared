@@ -21,7 +21,7 @@
 //#define SIGALRM_HANDLER     1
 
 static int timer_up = 0;
-char *sensor_data[] = {"15.4","15.5","15.6","16.12","17.54","18.12","14.13","17.84"};
+char *sensor_data[] = {"T:15.40,H:10.0","T:15.50,H:11.0","T:15.60,H:12.0","T:16.12,H:13.0","T:17.54,H:14.0","T:18.12,H:15.0"};
 
 /***********************************************************************************************
 * Name          : func
@@ -36,7 +36,7 @@ void func(int sockfd)
     while(1) 
     {
     	
-         for(int i = 0; i < 8; i++){   
+         for(int i = 0; i < 6; i++){   
             
             rt = write(sockfd, sensor_data[i], strlen(sensor_data[i])); // send the message to client
             if(rt < 0){
@@ -112,7 +112,7 @@ int main()
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
 
-    printf("***Starting Server program Version SLEEP...***\n");
+    printf("***Starting Server program Version Humidity...***\n");
 
     #ifdef SIGALRM_HANDLER
 

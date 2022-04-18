@@ -10,8 +10,9 @@ int main(int argc, char *argv[ ])
     Window window;
     FileReader fr;
 
-    /*Register temp change signal and slot*/
+    /*Register temp & humidity change signal and slot*/
     QObject::connect(&fr, &FileReader::SigTempChanged, &window, &Window::SloTempChanged);
+    QObject::connect(&fr, &FileReader::SigHumChanged, &window, &Window::SloHumChanged);
 
     /* Main window properties*/
     window.setFixedSize(720,480);

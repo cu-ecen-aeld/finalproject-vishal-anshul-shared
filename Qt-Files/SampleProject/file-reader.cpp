@@ -14,17 +14,31 @@ FileReader::FileReader()
 
 void FileReader::timerHandler()
 {
-    QFile file("/var/tmp/csocket-data.txt");
+    /*Temp file read*/
+    QFile file_tmp("/var/tmp/tmp-socket-data.txt");
 
-    if(!file.open(QIODevice::ReadOnly | QIODevice:: Text)){
+    if(!file_tmp.open(QIODevice::ReadOnly | QIODevice:: Text)){
         qDebug() << "Error opening socket file for reading!";
         return;
     }
 
-    float temp = QString(file.readAll()).toDouble();
+    float temp = QString(file_tmp.readAll()).toDouble();
     qDebug() << "Temp received:" << temp;
 
     emit SigTempChanged(temp);
+
+    /*Hum file read*/
+    QFile file_hum("/var/tmp/hum-socket-data.txt");
+
+    if(!file_hum.open(QIODevice::ReadOnly | QIODevice:: Text)){
+        qDebug() << "Error opening socket file for reading!";
+        return;
+    }
+
+    float hum = QString(file_hum.readAll()).toDouble();
+    qDebug() << "Hum received:" << hum;
+
+    emit SigHumChanged(hum);
 
     //test->file.close();
 }

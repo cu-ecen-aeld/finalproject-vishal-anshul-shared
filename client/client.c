@@ -21,10 +21,28 @@
 #define PORT 8080
 #define SA struct sockaddr
 
+#define TEMP_TAG_POS		0
+#define TEMP_SIZE			5
+#define TEMP_BUFF_SIZE		6
+#define TEMP_DATA_OFFSET	2
+
+#define HUM_TAG_POS			8
+#define HUM_SIZE			4
+#define HUM_BUFF_SIZE		5	
+#define HUM_DATA_OFFSET		10				
+
+char temp_buff[TEMP_BUFF_SIZE] = {0};
+char hum_buff[HUM_BUFF_SIZE] = {0};
+
 int socket_fd =0;
 
-char *file_path = "/var/tmp/csocket-data.txt";
-pthread_mutex_t mutex_lock = PTHREAD_MUTEX_INITIALIZER;
+char *file_path_tmp = "/var/tmp/tmp-socket-data.txt";
+char *file_path_hum = "/var/tmp/hum-socket-data.txt";
+
+char buffer[SIZE];
+
+void parse_data(char *buffer);
+void write_to_file(char *temp_buff, char *hum_buff);
 
 /*struct addrinfo hints;
 struct addrinfo *servinfo;
@@ -36,12 +54,11 @@ const char *service_port = SERVICE_PORT;
 char ip_addr[INET_ADDRSTRLEN];*/
 struct sockaddr_in servaddr;
 
-int errnum =0;
+int errnum = 0;
 int ret_val;
 
-void func(int sockfd)
+void socket_open(int sockfd)
 {
-    char buffer[SIZE];
 	memset(buffer, 0 , sizeof(buffer));
 
     while(1) {
@@ -50,44 +67,89 @@ void func(int sockfd)
         while(read(sockfd, buffer, sizeof(buffer))==0);  // read client message and copy that in the buffer
         printf("From Server : %s\n\r", buffer);
 
-        /*Open the file for writing*/
-
-        int m_ret = pthread_mutex_lock(&mutex_lock);
-		if(m_ret){
-			printf("Mutex lock error before write!\n");
-			exit(EXIT_FAILURE);
-		}
-
-	    int fd = open(file_path, O_TRUNC | O_WRONLY | O_CREAT, 0644);
-		if(fd == -1){
-			printf("File open error for appending\n");
-			perror("File_Open:");
-			exit(EXIT_FAILURE);
-		}
-
-        /*Write data to the file*/
-        int nr = write(fd,buffer,strlen(buffer));
-		if(nr == -1){
-			printf("Error: File could not be written!\n");
-			//syslog(LOG_ERR,"Error: File could not be written!");
-			exit(EXIT_FAILURE);
-		}else if(nr != strlen(buffer)){
-			printf("Error: File partially written!\n");
-			//syslog(LOG_ERR,"Error: File partially written!");
-			exit(EXIT_FAILURE);
-		}
-
-    	close(fd);
-
-    	m_ret = pthread_mutex_unlock(&mutex_lock);
-		if(m_ret){
-		printf("Mutex unlock error after write!\n");
-		exit(EXIT_FAILURE);
-		}
-
+        parse_data(buffer);
     }
 
 }
+
+
+void parse_data(char *buffer)
+{
+	int i;
+	char *tp = buffer;
+	char *hp = buffer;
+
+	if(*(tp + TEMP_TAG_POS) == 'T'){
+
+		for(i=0; i < TEMP_SIZE; i++){
+			temp_buff[i] = *(tp + i + TEMP_DATA_OFFSET);
+		}
+
+		temp_buff[i] = '\0';
+	}
+
+	if(*(hp + HUM_TAG_POS) == 'H'){
+
+		for(i=0; i < HUM_SIZE; i++){
+			hum_buff[i] = *(hp + i + HUM_DATA_OFFSET);
+		}
+
+		hum_buff[i] = '\0';
+	}
+
+	write_to_file(temp_buff, hum_buff);
+}
+
+void write_to_file(char *temp_buff, char *hum_buff)
+{
+
+    /*Open the temp file for writing*/
+    int fd = open(file_path_tmp, O_TRUNC | O_WRONLY | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Write data to the temp file*/
+    int nr = write(fd,temp_buff,strlen(temp_buff));
+	if(nr == -1){
+		printf("Error: File could not be written!\n");
+		//syslog(LOG_ERR,"Error: File could not be written!");
+		exit(EXIT_FAILURE);
+	}else if(nr != strlen(temp_buff)){
+		printf("Error: File partially written!\n");
+		//syslog(LOG_ERR,"Error: File partially written!");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
+
+	/*Open the hum file for writing*/
+
+	fd = open(file_path_hum, O_TRUNC | O_WRONLY | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Write data to the hum file*/
+    nr = write(fd,hum_buff,strlen(hum_buff));
+	if(nr == -1){
+		printf("Error: File could not be written!\n");
+		//syslog(LOG_ERR,"Error: File could not be written!");
+		exit(EXIT_FAILURE);
+	}else if(nr != strlen(hum_buff)){
+		printf("Error: File partially written!\n");
+		//syslog(LOG_ERR,"Error: File partially written!");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
+
+}
+
 
 int setup_comm()
 {
@@ -117,7 +179,7 @@ int setup_comm()
 	memset(&servaddr, 0, sizeof(servaddr));
 	
 	/* Assign IP and port */
-	servaddr.sin_addr.s_addr = inet_addr("10.0.0.36");
+	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
 	servaddr.sin_family = AF_INET;  
 	servaddr.sin_port = htons(PORT);
 	
@@ -136,10 +198,7 @@ int setup_comm()
 
 int main()
 {
-
-	pthread_mutex_init(&mutex_lock, NULL);
-
-	printf("***Starting client program Version 10.36...***\n");
+	printf("***Starting client program Version 127.0...***\n");
 
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 
@@ -174,7 +233,7 @@ int main()
 
 		syslog(LOG_DEBUG, "Connected to server\n");	
 		printf("Connected to server\n\r");
-		func(socket_fd);     // function for chat
+		socket_open(socket_fd);     // function for chat
 		
 		
 

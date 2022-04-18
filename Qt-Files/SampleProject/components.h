@@ -11,7 +11,7 @@
 #include <time.h>
 
 class QLabel;
-
+class QProgressBar;
 
 class Components : public QWidget
 {
@@ -22,9 +22,12 @@ public:
 
 public slots:
     void SloTempChanged(float temp);
+    void SloHumChanged(float hum);
 
 private:
     QLabel *temp_v;
+    QLabel *humi_v;
+    QProgressBar *progressBar;
 
 };
 
