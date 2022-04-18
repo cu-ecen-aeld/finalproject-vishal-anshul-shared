@@ -76,3 +76,10 @@ void Components::SloTempChanged(float temp)
     progressBar->setValue((int)temp);
 }
 
+void Components::SloHumChanged(float hum)
+{
+    /*convert humidity from float to string
+     * as QLabel needs a string*/
+    humi_v->setText(QString::number(hum, 'f', 2));
+
+}

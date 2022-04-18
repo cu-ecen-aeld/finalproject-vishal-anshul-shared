@@ -12,6 +12,7 @@ public:
 
 signals:
     void SigTempChanged(float temp);
+    void SigHumChanged(float hum);
 
 private slots:
     void timerHandler();

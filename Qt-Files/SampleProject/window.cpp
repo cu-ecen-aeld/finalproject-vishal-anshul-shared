@@ -58,6 +58,13 @@ void Window::SloTempChanged(float temp)
     components->SloTempChanged(temp);
 }
 
-void Window::handle_button2(){
+void Window::SloHumChanged(float hum){
+
+    components->SloHumChanged(hum);
+
+}
+
+void Window::handle_button2()
+{
 
 }

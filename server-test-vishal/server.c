@@ -112,7 +112,7 @@ int main()
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
 
-    printf("***Starting Server program Version SLEEP...***\n");
+    printf("***Starting Server program Version Humidity...***\n");
 
     #ifdef SIGALRM_HANDLER
 

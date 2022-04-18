@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_FileReader_t {
-    QByteArrayData data[5];
-    char stringdata0[45];
+    QByteArrayData data[7];
+    char stringdata0[63];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -35,11 +35,13 @@ QT_MOC_LITERAL(0, 0, 10), // "FileReader"
 QT_MOC_LITERAL(1, 11, 14), // "SigTempChanged"
 QT_MOC_LITERAL(2, 26, 0), // ""
 QT_MOC_LITERAL(3, 27, 4), // "temp"
-QT_MOC_LITERAL(4, 32, 12) // "timerHandler"
+QT_MOC_LITERAL(4, 32, 13), // "SigHumChanged"
+QT_MOC_LITERAL(5, 46, 3), // "hum"
+QT_MOC_LITERAL(6, 50, 12) // "timerHandler"
 
     },
     "FileReader\0SigTempChanged\0\0temp\0"
-    "timerHandler"
+    "SigHumChanged\0hum\0timerHandler"
 };
 #undef QT_MOC_LITERAL
 
@@ -49,21 +51,23 @@ static const uint qt_meta_data_FileReader[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       2,   14, // methods
+       3,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       2,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,   24,    2, 0x06 /* Public */,
+       1,    1,   29,    2, 0x06 /* Public */,
+       4,    1,   32,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-       4,    0,   27,    2, 0x08 /* Private */,
+       6,    0,   35,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Float,    3,
+    QMetaType::Void, QMetaType::Float,    5,
 
  // slots: parameters
     QMetaType::Void,
@@ -78,7 +82,8 @@ void FileReader::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         Q_UNUSED(_t)
         switch (_id) {
         case 0: _t->SigTempChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 1: _t->timerHandler(); break;
+        case 1: _t->SigHumChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 2: _t->timerHandler(); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -87,6 +92,13 @@ void FileReader::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
             using _t = void (FileReader::*)(float );
             if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&FileReader::SigTempChanged)) {
                 *result = 0;
+                return;
+            }
+        }
+        {
+            using _t = void (FileReader::*)(float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&FileReader::SigHumChanged)) {
+                *result = 1;
                 return;
             }
         }
@@ -122,13 +134,13 @@ int FileReader::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 2)
+        if (_id < 3)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 2;
+        _id -= 3;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 2)
+        if (_id < 3)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 2;
+        _id -= 3;
     }
     return _id;
 }
@@ -138,6 +150,13 @@ void FileReader::SigTempChanged(float _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
     QMetaObject::activate(this, &staticMetaObject, 0, _a);
+}
+
+// SIGNAL 1
+void FileReader::SigHumChanged(float _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(&_t1)) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

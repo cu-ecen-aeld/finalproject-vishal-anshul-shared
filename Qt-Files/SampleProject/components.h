@@ -22,6 +22,7 @@ public:
 
 public slots:
     void SloTempChanged(float temp);
+    void SloHumChanged(float hum);
 
 private:
     QLabel *temp_v;

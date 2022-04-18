@@ -198,7 +198,7 @@ int setup_comm()
 
 int main()
 {
-	printf("***Starting client program Version 10.36...***\n");
+	printf("***Starting client program Version 127.0...***\n");
 
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 
