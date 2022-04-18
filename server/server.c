@@ -301,7 +301,7 @@ int main()
     while(1)
     {
     
-    	char *str_pkt = NULL;
+    	char *str_pkt = "";
     	temp_data = temp_readings();
     	
     	length = snprintf(NULL, 0, "%f", temp_data);
@@ -313,6 +313,7 @@ int main()
     	length = snprintf(NULL, 0, "%f", RH_data);
     	char *str_rh = malloc(length+1);
     	snprintf(str_rh, length+1, "%f", RH_data);
+    	printf("int to float conversion done RH\n\r");
     	
     	strcat(str_pkt, str1);
     	strcat(str_pkt, str_temp);
