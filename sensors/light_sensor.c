@@ -70,19 +70,19 @@ int main()
 	int  n = 2;
 	char buf[n];
 	
-	buf[0] = (COMMAND_BIT|REGISTER_CTRL);
+	buf[0] = (COMMAND_BIT|REGISTER_ENABLE);
 	buf[1] = (TSL2591_ENABLE_POWERON|TSL2591_ENABLE_AEN|TSL2591_ENABLE_AIEN|TSL2591_ENABLE_NPIEN);
 	
 	ret_val = write(i2c_fd, &buf, 2);
 	if(ret_val != 2)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in setting gain for light sensor\n\r");
-		printf("Call to write() failed. Error in setting gain for light sensor\n\r");
+		syslog(LOG_ERR, "Call to write() failed. Error in enabling light sensor\n\r");
+		printf("Call to write() failed. Error in enabling light sensor\n\r");
 		return -1;
 	}
 	else
 	{
-		printf("Call to write() to set gain successful. Gain set to 25x\n\r");
+		printf("Call to write() to enable light sensor successful\n\r");
 	}
 	
 	
@@ -93,7 +93,7 @@ int main()
 	******************************************/
 
 	
-	buf[0] = (COMMAND_BIT|REGISTER_ENABLE);
+	buf[0] = (COMMAND_BIT|REGISTER_CTRL);
 	buf[1] = (TSL2591_GAIN_MED);
 	
 	ret_val = write(i2c_fd, &buf, 2);
