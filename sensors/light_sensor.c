@@ -102,7 +102,7 @@ int main()
 		printf("Call to write() to set integration time successful. Integration time set to 300ms\n\r");
 	}
 	
-	usleep(500); //wait for atleast 500ms
+	usleep(1000); //wait for atleast 500ms
 	if(errno)
 	{
 		syslog(LOG_ERR, "Call to usleep() failed\n\r");
@@ -147,6 +147,10 @@ int main()
 	int x = (buf[1] << 8);
 	x |= buf[0];
 	
+	printf("buf[0]: %d\n\r", buf[0]);
+	printf("buf[1]: %d\n\r", buf[1]);
+	printf("x: %d\n\r", x);
+	
 	buf[0] = (COMMAND_BIT|REG_CHAN1_LOW);
 	buf[1] = 0x00;
 	
@@ -179,6 +183,10 @@ int main()
 	x = x << 16;
 	x = (buf[1] << 8);
 	x |= buf[0];
+	
+	printf("buf[0]: %d\n\r", buf[0]);
+	printf("buf[1]: %d\n\r", buf[1]);
+	printf("x: %d\n\r", x);
 	
 	int ir = x >>16;
 	int full = x&0xFFFF;
