@@ -554,28 +554,28 @@ int main()
     	
     	printf("Total Length: %d\n\r". total_length);
     	memset(str_pkt, 0, total_length);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	
     	strcat(str_pkt, str1);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_temp);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str2);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_rh);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str3);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_ir);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str4);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_full);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str5);
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_vis);  	
-    	printf("strpkt: %s\n\r". str_pkt);
+    	printf("strpkt: %s\n\r", str_pkt);
 
     	printf("Sending data: %s\n", str_pkt);
     	rt = write(connfd, str_pkt, strlen(str_pkt)); // send the message to client
