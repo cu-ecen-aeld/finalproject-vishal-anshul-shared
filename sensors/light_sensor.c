@@ -23,6 +23,11 @@ Description: This code is used to read luminosity values from Adafruit TSL2591 s
 #define INTEGRATION_300MS (0x02)
 #define REG_CHAN0_LOW (0x14)
 #define REG_CHAN1_LOW (0x16)
+#define REGISTER_ENABLE (0x00)
+#define TSL2591_ENABLE_POWERON (0x01)
+#define TSL2591_ENABLE_AEN (0x02)
+#define TSL2591_ENABLE_AIEN (0x10)
+#define TSL2591_ENABLE_NPIEN (0x80)
 
 int main()
 {	
@@ -56,6 +61,30 @@ int main()
 		printf("Call to ioctl() successful.\n\r");
 	}
 	
+	/******************************************
+	*
+	* Enable Sensor
+	*
+	******************************************/
+	
+	int  n = 2;
+	char buf[n];
+	
+	buf[0] = (COMMAND_BIT|REGISTER_CTRL);
+	buf[1] = (TSL2591_ENABLE_POWERON|TSL2591_ENABLE_AEN|TSL2591_ENABLE_AIEN|TSL2591_ENABLE_NPIEN);
+	
+	ret_val = write(i2c_fd, &buf, 2);
+	if(ret_val != 2)
+	{
+		syslog(LOG_ERR, "Call to write() failed. Error in setting gain for light sensor\n\r");
+		printf("Call to write() failed. Error in setting gain for light sensor\n\r");
+		return -1;
+	}
+	else
+	{
+		printf("Call to write() to set gain successful. Gain set to 25x\n\r");
+	}
+	
 	
 	/******************************************
 	*
@@ -66,7 +95,7 @@ int main()
 	int  n = 2;
 	char buf[n];
 	
-	buf[0] = (COMMAND_BIT|REGISTER_CTRL);
+	buf[0] = (COMMAND_BIT|REGISTER_ENABLE);
 	buf[1] = (TSL2591_GAIN_MED);
 	
 	ret_val = write(i2c_fd, &buf, 2);
