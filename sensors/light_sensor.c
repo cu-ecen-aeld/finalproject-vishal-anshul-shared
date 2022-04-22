@@ -91,9 +91,7 @@ int main()
 	* Set Gain 
 	*
 	******************************************/
-	
-	int  n = 2;
-	char buf[n];
+
 	
 	buf[0] = (COMMAND_BIT|REGISTER_ENABLE);
 	buf[1] = (TSL2591_GAIN_MED);
