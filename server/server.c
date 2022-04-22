@@ -552,7 +552,7 @@ int main()
     	total_length = (length1 + length2 + length3 + length4 + length5 +strlen(str1) +strlen(str2) + strlen(str3) +strlen(str4) + strlen(str5) -5);
     	char *str_pkt = malloc(total_length);
     	
-    	printf("Total Length: %d\n\r". total_length);
+    	printf("Total Length: %d\n\r", total_length);
     	memset(str_pkt, 0, total_length);
     	printf("strpkt: %s\n\r", str_pkt);
     	
