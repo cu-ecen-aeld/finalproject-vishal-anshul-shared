@@ -250,7 +250,7 @@ void light_readings(void)
 	
 	sensor_data.ir_light_data = x >>16;
 	sensor_data.full_light_data = x&0xFFFF;
-	sensor_data.visible_light_data = ((sensor_data.ir_light_data) - (sensor_data.full_light_data));
+	sensor_data.visible_light_data = ((sensor_data.full_light_data) - (sensor_data.ir_light_data));
 	
 	printf("IR: %d\n\r", sensor_data.ir_light_data);
 	printf("Full: %d\n\r", sensor_data.full_light_data);
@@ -552,30 +552,30 @@ int main()
     	total_length = (length1 + length2 + length3 + length4 + length5 +strlen(str1) +strlen(str2) + strlen(str3) +strlen(str4) + strlen(str5) -5);
     	char *str_pkt = malloc(total_length);
     	
-    	printf("Total Length: %d\n\r", total_length);
+    	//printf("Total Length: %d\n\r", total_length);
     	memset(str_pkt, 0, total_length);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	
     	strcat(str_pkt, str1);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_temp);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str2);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_rh);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str3);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_ir);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str4);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_full);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str5);
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_vis);  	
-    	printf("strpkt: %s\n\r", str_pkt);
+    	//printf("strpkt: %s\n\r", str_pkt);
 
     	printf("Sending data: %s\n", str_pkt);
     	rt = write(connfd, str_pkt, strlen(str_pkt)); // send the message to client
