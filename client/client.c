@@ -40,11 +40,12 @@ char *file_path_hum = "/var/tmp/hum-socket-data.txt";
 char *file_path_ir = "/var/tmp/ir-socket-data.txt";
 char *file_path_full = "/var/tmp/full-socket-data.txt";
 char *file_path_vis = "/var/tmp/vis-socket-data.txt";
+char *file_path_log = "/var/tmp/log-file.txt";
 
 char buffer[SIZE];
 
 void parse_data(char *buffer);
-void write_to_file(char *temp_buff, char *hum_buff, char *ir_buff, char *full_buff, char *vis_buff);
+void write_to_file(char *temp_buff, char *hum_buff, char *ir_buff, char *full_buff, char *vis_buff, char *packet);
 
 /*struct addrinfo hints;
 struct addrinfo *servinfo;
@@ -73,6 +74,7 @@ void socket_open(int sockfd)
     }
 
 }
+char* packet = NULL;
 
 void parse_data(char *buffer)
 {
@@ -154,12 +156,44 @@ void parse_data(char *buffer)
 	}
 	vis_buff[++i] = '\0';
 
+	int buff_len = strlen(buffer);
 
-	write_to_file(temp_buff, hum_buff, ir_buff, full_buff, vis_buff);
+	packet = (char*) malloc(sizeof(char)*(buff_len+2));
+	strcpy(packet, buffer);
+	packet[buff_len] = '\n';
+	packet[buff_len + 1] = '\0';
+
+	//printf("packet:%s\n",packet);
+
+	write_to_file(temp_buff, hum_buff, ir_buff, full_buff, vis_buff, packet);
 }
 
-void write_to_file(char *temp_buff, char *hum_buff, char *ir_buff, char *full_buff, char *vis_buff)
+void write_to_file(char *temp_buff, char *hum_buff, char *ir_buff, char *full_buff, char *vis_buff,char *packet)
 {
+	/*--Time logging--*/
+    char time_string[200];
+    time_t ti;
+    struct tm *tm_ptr;
+    int timer_len = 0;
+
+    ti = time(NULL);
+    tm_ptr = localtime(&ti);
+    if(tm_ptr == NULL){
+        perror("Local timer error!");
+        exit(EXIT_FAILURE);
+    }
+
+    timer_len = strftime(time_string,sizeof(time_string),"@:%d.%b.%y - %k:%M:%S=>",tm_ptr);
+    if(timer_len == 0){
+        perror("strftimer returned 0!");
+        exit(EXIT_FAILURE);
+    }
+
+	strcat(time_string,packet);
+
+    printf("log value:%s\n",time_string);
+
+	/*--Time logging--*/
 
     /*Open the temp file for writing*/
     int fd = open(file_path_tmp, O_TRUNC | O_WRONLY | O_CREAT, 0644);
@@ -275,6 +309,29 @@ void write_to_file(char *temp_buff, char *hum_buff, char *ir_buff, char *full_bu
 
 	close(fd);
 
+	/*Open the Log file for appending*/
+
+	fd = open(file_path_log, O_APPEND | O_WRONLY | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Write data to the hum file*/
+    nr = write(fd,time_string, strlen(time_string));
+	if(nr == -1){
+		printf("Error: File could not be written!\n");
+		//syslog(LOG_ERR,"Error: File could not be written!");
+		exit(EXIT_FAILURE);
+	}else if(nr != strlen(time_string)){
+		printf("Error: File partially written!\n");
+		//syslog(LOG_ERR,"Error: File partially written!");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
+
 }
 
 
@@ -329,6 +386,17 @@ int main()
 
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 
+
+	/*Open the Log file for Creating and truncating*/
+
+	int fd = open(file_path_log, O_TRUNC | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
     
 /******************************************************
 

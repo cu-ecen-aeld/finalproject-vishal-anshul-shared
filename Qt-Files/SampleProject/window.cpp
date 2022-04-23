@@ -18,7 +18,7 @@ Window::Window()
 
     /*Buttons*/
     QPushButton *button1 = new QPushButton("Button-1");
-    QPushButton *button2 = new QPushButton("Button-2");
+    QPushButton *button2 = new QPushButton("View Logs");
     button1->setStyleSheet("background-color:red;font-size: 25px;height: 36px;width: 80px;");
     button2->setStyleSheet("background-color:orange;font-size: 25px;height: 36px;width: 80px;");
 
@@ -83,5 +83,16 @@ void Window::SloVisChanged(int vis){
 
 void Window::handle_button2()
 {
+    //Add log file open.
+    QMessageBox *msgBox = new QMessageBox;
+
+    QFile logFile("/var/tmp/log-file.txt");
+
+    if(logFile.open(QIODevice::ReadOnly) == true){
+        msgBox->setText(QString(logFile.readAll()));
+        logFile.close();
+    }
+
+    msgBox->exec();
 
 }
