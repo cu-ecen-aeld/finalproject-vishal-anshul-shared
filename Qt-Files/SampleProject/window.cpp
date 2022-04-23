@@ -64,6 +64,23 @@ void Window::SloHumChanged(float hum){
 
 }
 
+void Window::SloIrChanged(int ir)
+{
+    components->SloIrChanged(ir);
+}
+
+void Window::SloFullChanged(int full){
+
+    components->SloFullChanged(full);
+
+}
+
+void Window::SloVisChanged(int vis){
+
+    components->SloVisChanged(vis);
+
+}
+
 void Window::handle_button2()
 {
 

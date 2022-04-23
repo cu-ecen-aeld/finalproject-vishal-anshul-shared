@@ -13,9 +13,12 @@ int main(int argc, char *argv[ ])
     /*Register temp & humidity change signal and slot*/
     QObject::connect(&fr, &FileReader::SigTempChanged, &window, &Window::SloTempChanged);
     QObject::connect(&fr, &FileReader::SigHumChanged, &window, &Window::SloHumChanged);
+    QObject::connect(&fr, &FileReader::SigIrChanged, &window, &Window::SloIrChanged);
+    QObject::connect(&fr, &FileReader::SigFullChanged, &window, &Window::SloFullChanged);
+    QObject::connect(&fr, &FileReader::SigVisChanged, &window, &Window::SloVisChanged);
 
     /* Main window properties*/
-    window.setFixedSize(720,480);
+    window.setFixedSize(1280,720);
     window.setStyleSheet("background-color: cyan;");
     window.show();
 

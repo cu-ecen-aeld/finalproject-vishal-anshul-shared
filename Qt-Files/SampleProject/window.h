@@ -25,6 +25,9 @@ public slots:
     void handle_button2();
     void SloTempChanged(float temp);
     void SloHumChanged(float hum);
+    void SloIrChanged(int ir);
+    void SloFullChanged(int full);
+    void SloVisChanged(int vis);
 
 public:
     Window();
