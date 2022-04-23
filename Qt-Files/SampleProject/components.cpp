@@ -28,22 +28,23 @@ Components::Components(){
     QFont t = temp_label->font();
     t.setPointSize(50);
     temp_label->setFont(t);
-    temp_label->setAlignment(Qt::AlignLeft);
+    temp_label->setAlignment(Qt::AlignCenter);
+    temp_label->setFrameStyle(QFrame::Box);
+    temp_label->setLineWidth(3);
+    temp_label->setMidLineWidth(3);
 
     /*Temp value label*/
     temp_v = new  QLabel(tr("Test"));
     temp_v->setFont(t);
-    temp_v->setAlignment(Qt::AlignLeft);
-
-    /*Progress Bar*/
-    progressBar = new QProgressBar();
-    progressBar->setMinimum(0);
-    progressBar->setMaximum(100);
+    temp_v->setAlignment(Qt::AlignCenter);
+    temp_v->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    temp_v->setLineWidth(6);
+    temp_v->setMidLineWidth(6);
 
     /*Temperature vlayout_1*/
     vlayout_t->addWidget(temp_label);
     vlayout_t->addWidget(temp_v);
-    //vlayout_t->addWidget(progressBar);
+
 
     /*Humi sensor label*/
     QLabel *humi_label = new QLabel(tr("Humidity:"));
@@ -51,11 +52,17 @@ Components::Components(){
     h.setPointSize(50);
     humi_label->setFont(h);
     humi_label->setAlignment(Qt::AlignCenter);
+    humi_label->setFrameStyle(QFrame::Panel);
+    humi_label->setLineWidth(3);
+    humi_label->setMidLineWidth(3);
 
     /*Humi value label*/
     humi_v = new  QLabel(tr("Humi"));
     humi_v->setFont(h);
     humi_v->setAlignment(Qt::AlignCenter);
+    humi_v->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    humi_v->setLineWidth(6);
+    humi_v->setMidLineWidth(6);
 
     /*Humidity vlayout_2*/
     vlayout_h->addWidget(humi_label);
@@ -71,11 +78,17 @@ Components::Components(){
     i.setPointSize(25);
     ir_label->setFont(i);
     ir_label->setAlignment(Qt::AlignCenter);
+    ir_label->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    ir_label->setLineWidth(3);
+    ir_label->setMidLineWidth(3);
 
     /*IR value label*/
     ir_v = new  QLabel(tr("ir"));
     ir_v->setFont(i);
     ir_v->setAlignment(Qt::AlignCenter);
+    ir_v->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    ir_v->setLineWidth(6);
+    ir_v->setMidLineWidth(6);
 
     /*Ir vlayout_3*/
     vlayout_i->addWidget(ir_label);
@@ -87,11 +100,17 @@ Components::Components(){
     f.setPointSize(25);
     full_label->setFont(f);
     full_label->setAlignment(Qt::AlignCenter);
+    full_label->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    full_label->setLineWidth(3);
+    full_label->setMidLineWidth(3);
 
     /*Full value label*/
     full_v = new  QLabel(tr("full"));
     full_v->setFont(f);
     full_v->setAlignment(Qt::AlignCenter);
+    full_v->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    full_v->setLineWidth(6);
+    full_v->setMidLineWidth(6);
 
     /*Full vlayout_4*/
     vlayout_f->addWidget(full_label);
@@ -107,15 +126,27 @@ Components::Components(){
     v.setPointSize(25);
     vis_label->setFont(v);
     vis_label->setAlignment(Qt::AlignCenter);
+    vis_label->setFrameStyle(QFrame::Panel | QFrame::Raised);
+    full_label->setLineWidth(3);
+    full_label->setMidLineWidth(3);
 
     /*Visible value label*/
     vis_v = new  QLabel(tr("visible"));
     vis_v->setFont(v);
     vis_v->setAlignment(Qt::AlignCenter);
+    vis_v->setFrameStyle(QFrame::Panel | QFrame::Sunken);
+    vis_v->setLineWidth(6);
+    vis_v->setMidLineWidth(6);
+
+    /*Progress Bar*/
+    progressBar = new QProgressBar();
+    progressBar->setMinimum(0);
+    progressBar->setMaximum(65535);
 
     /*Visible vlayout_5*/
     vlayout_v->addWidget(vis_label);
     vlayout_v->addWidget(vis_v);
+    vlayout_v->addWidget(progressBar);
 
     /*Add final widgets*/
     vlayout->addWidget(app_name);
@@ -131,7 +162,6 @@ void Components::SloTempChanged(float temp)
     /*convert temperature from float to string
      * as QLabel needs a string*/
     temp_v->setText(QString::number(temp, 'f', 2));
-    progressBar->setValue((int)temp);
 }
 
 void Components::SloHumChanged(float hum)
@@ -164,5 +194,6 @@ void Components::SloVisChanged(int vis)
     /*convert vis from int to string
      * as QLabel needs a string*/
     vis_v->setText(QString::number(vis));
+    progressBar->setValue(vis);
 
 }

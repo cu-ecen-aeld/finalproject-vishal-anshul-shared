@@ -19,7 +19,7 @@ int main(int argc, char *argv[ ])
 
     /* Main window properties*/
     window.setFixedSize(1280,720);
-    window.setStyleSheet("background-color: cyan;");
+    window.setStyleSheet("background-color: lightblue;");
     window.show();
 
     return app.exec();
