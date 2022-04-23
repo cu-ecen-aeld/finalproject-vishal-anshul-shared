@@ -40,7 +40,7 @@ DISTNAME      = SampleProject1.0.0
 DISTDIR = /home/vishalraj/Qt_Projects/build-SampleProject-Desktop-Debug/.tmp/SampleProject1.0.0
 LINK          = g++
 LFLAGS        = 
-LIBS          = $(SUBLIBS) /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
+LIBS          = $(SUBLIBS) -lgpiod /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Core.so /usr/lib/x86_64-linux-gnu/libGL.so -lpthread   
 AR            = ar cqs
 RANLIB        = 
 SED           = sed
@@ -418,7 +418,8 @@ components.o: ../Qt-Files/SampleProject/components.cpp ../Qt-Files/SampleProject
 file-reader.o: ../Qt-Files/SampleProject/file-reader.cpp ../Qt-Files/SampleProject/file-reader.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o file-reader.o ../Qt-Files/SampleProject/file-reader.cpp
 
-main.o: ../Qt-Files/SampleProject/main.cpp ../Qt-Files/SampleProject/window.h
+main.o: ../Qt-Files/SampleProject/main.cpp ../Qt-Files/SampleProject/window.h \
+		../Qt-Files/SampleProject/file-reader.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../Qt-Files/SampleProject/main.cpp
 
 mainwindow.o: ../Qt-Files/SampleProject/mainwindow.cpp ../Qt-Files/SampleProject/mainwindow.h \
