@@ -21,8 +21,8 @@
 //#define SIGALRM_HANDLER     1
 
 static int timer_up = 0;
-char *sensor_data[] = {"T:15.40,H:10.0","T:15.50,H:11.0","T:15.60,H:12.0","T:16.12,H:13.0","T:17.54,H:14.0","T:18.12,H:15.0"};
-
+//char *sensor_data[] = {"T:15.40,H:10.0","T:15.50,H:11.0","T:15.60,H:12.0","T:16.12,H:13.0","T:17.54,H:14.0","T:18.12,H:15.0"};
+char *sensor_data[] ={"T:15.40,H:10.00,IR:65530,FULL:65531,VIS:65532", "T:16.12,H:13.00,IR:65533,FULL:65534,VIS:65535"};
 /***********************************************************************************************
 * Name          : func
 * Description   : function for server- client communication 
@@ -36,7 +36,7 @@ void func(int sockfd)
     while(1) 
     {
     	
-         for(int i = 0; i < 6; i++){   
+         for(int i = 0; i < 2; i++){   
             
             rt = write(sockfd, sensor_data[i], strlen(sensor_data[i])); // send the message to client
             if(rt < 0){

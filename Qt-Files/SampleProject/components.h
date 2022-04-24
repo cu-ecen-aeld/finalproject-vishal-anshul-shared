@@ -23,10 +23,16 @@ public:
 public slots:
     void SloTempChanged(float temp);
     void SloHumChanged(float hum);
+    void SloIrChanged(int ir);
+    void SloFullChanged(int full);
+    void SloVisChanged(int vis);
 
 private:
     QLabel *temp_v;
     QLabel *humi_v;
+    QLabel *ir_v;
+    QLabel *full_v;
+    QLabel *vis_v;
     QProgressBar *progressBar;
 
 };

@@ -21,10 +21,15 @@ class Window : public QWidget
     Q_OBJECT
 
 public slots:
-    void handle_button1();
+    int handle_button1();
     void handle_button2();
+    void handle_statusButton();
+    int handle_offButton();
     void SloTempChanged(float temp);
     void SloHumChanged(float hum);
+    void SloIrChanged(int ir);
+    void SloFullChanged(int full);
+    void SloVisChanged(int vis);
 
 public:
     Window();

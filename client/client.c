@@ -21,28 +21,31 @@
 #define PORT 8080
 #define SA struct sockaddr
 
-#define TEMP_TAG_POS		0
-#define TEMP_SIZE			5
-#define TEMP_BUFF_SIZE		6
-#define TEMP_DATA_OFFSET	2
+#define ALL_BUFF_SIZE		10
+#define TMP_HUM_VAL_OFFSET	2
+#define IR_VALUE_OFFSET		3
+#define FULL_VALUE_OFFSET	5
+#define VIS_VALUE_OFFSET	4		
 
-#define HUM_TAG_POS			8
-#define HUM_SIZE			4
-#define HUM_BUFF_SIZE		5	
-#define HUM_DATA_OFFSET		10				
-
-char temp_buff[TEMP_BUFF_SIZE] = {0};
-char hum_buff[HUM_BUFF_SIZE] = {0};
+char temp_buff[ALL_BUFF_SIZE] = {0};
+char hum_buff[ALL_BUFF_SIZE] = {0};
+char ir_buff[ALL_BUFF_SIZE] = {0};
+char full_buff[ALL_BUFF_SIZE] = {0};
+char vis_buff[ALL_BUFF_SIZE] = {0};
 
 int socket_fd =0;
 
 char *file_path_tmp = "/var/tmp/tmp-socket-data.txt";
 char *file_path_hum = "/var/tmp/hum-socket-data.txt";
+char *file_path_ir = "/var/tmp/ir-socket-data.txt";
+char *file_path_full = "/var/tmp/full-socket-data.txt";
+char *file_path_vis = "/var/tmp/vis-socket-data.txt";
+char *file_path_log = "/var/tmp/log-file.txt";
 
 char buffer[SIZE];
 
 void parse_data(char *buffer);
-void write_to_file(char *temp_buff, char *hum_buff);
+void write_to_file(char *temp_buff, char *hum_buff, char *ir_buff, char *full_buff, char *vis_buff, char *packet);
 
 /*struct addrinfo hints;
 struct addrinfo *servinfo;
@@ -71,37 +74,126 @@ void socket_open(int sockfd)
     }
 
 }
-
+char* packet = NULL;
 
 void parse_data(char *buffer)
 {
 	int i;
-	char *tp = buffer;
-	char *hp = buffer;
+	char *dp = buffer;
 
-	if(*(tp + TEMP_TAG_POS) == 'T'){
+	/*--Temperature parse--*/
+	while(*dp != 'T')
+		dp++;
+	
+	//skip ':'
+	dp += TMP_HUM_VAL_OFFSET;
+	i = 0;
 
-		for(i=0; i < TEMP_SIZE; i++){
-			temp_buff[i] = *(tp + i + TEMP_DATA_OFFSET);
-		}
-
-		temp_buff[i] = '\0';
+	while(*dp != ','){
+		temp_buff[i] = *dp;
+		dp++;
+		i++;
 	}
+	temp_buff[++i] = '\0';
 
-	if(*(hp + HUM_TAG_POS) == 'H'){
+	/*--Humidity parse--*/
+	while(*dp != 'H')
+		dp++;
+	
+	//skip ':'
+	dp += TMP_HUM_VAL_OFFSET;
+	i = 0;
 
-		for(i=0; i < HUM_SIZE; i++){
-			hum_buff[i] = *(hp + i + HUM_DATA_OFFSET);
-		}
-
-		hum_buff[i] = '\0';
+	while(*dp != ','){
+		hum_buff[i] = *dp;
+		dp++;
+		i++;
 	}
+	hum_buff[++i] = '\0';
 
-	write_to_file(temp_buff, hum_buff);
+	/*--IR parse--*/
+	while(*dp != 'I')
+		dp++;
+	
+	//skip 'IR:'
+	dp += IR_VALUE_OFFSET;
+	i = 0;
+
+	while(*dp != ','){
+		ir_buff[i] = *dp;
+		dp++;
+		i++;
+	}
+	ir_buff[++i] = '\0';
+
+	/*--Full parse--*/
+	while(*dp != 'F')
+		dp++;
+	
+	//skip 'FULL:'
+	dp += FULL_VALUE_OFFSET;
+	i = 0;
+
+	while(*dp != ','){
+		full_buff[i] = *dp;
+		dp++;
+		i++;
+	}
+	full_buff[++i] = '\0';
+
+	/*--Vis parse--*/
+	while(*dp != 'V')
+		dp++;
+	
+	//skip 'VIS:'
+	dp += VIS_VALUE_OFFSET;
+	i = 0;
+
+	while(*dp != '\0'){
+		vis_buff[i] = *dp;
+		dp++;
+		i++;
+	}
+	vis_buff[++i] = '\0';
+
+	int buff_len = strlen(buffer);
+
+	packet = (char*) malloc(sizeof(char)*(buff_len+2));
+	strcpy(packet, buffer);
+	packet[buff_len] = '\n';
+	packet[buff_len + 1] = '\0';
+
+	//printf("packet:%s\n",packet);
+
+	write_to_file(temp_buff, hum_buff, ir_buff, full_buff, vis_buff, packet);
 }
 
-void write_to_file(char *temp_buff, char *hum_buff)
+void write_to_file(char *temp_buff, char *hum_buff, char *ir_buff, char *full_buff, char *vis_buff,char *packet)
 {
+	/*--Time logging--*/
+    char time_string[200];
+    time_t ti;
+    struct tm *tm_ptr;
+    int timer_len = 0;
+
+    ti = time(NULL);
+    tm_ptr = localtime(&ti);
+    if(tm_ptr == NULL){
+        perror("Local timer error!");
+        exit(EXIT_FAILURE);
+    }
+
+    timer_len = strftime(time_string,sizeof(time_string),"@:%d.%b.%y - %k:%M:%S=>",tm_ptr);
+    if(timer_len == 0){
+        perror("strftimer returned 0!");
+        exit(EXIT_FAILURE);
+    }
+
+	strcat(time_string,packet);
+
+    printf("log value:%s\n",time_string);
+
+	/*--Time logging--*/
 
     /*Open the temp file for writing*/
     int fd = open(file_path_tmp, O_TRUNC | O_WRONLY | O_CREAT, 0644);
@@ -148,6 +240,98 @@ void write_to_file(char *temp_buff, char *hum_buff)
 
 	close(fd);
 
+	/*Open the ir file for writing*/
+
+	fd = open(file_path_ir, O_TRUNC | O_WRONLY | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Write data to the hum file*/
+    nr = write(fd,ir_buff,strlen(ir_buff));
+	if(nr == -1){
+		printf("Error: File could not be written!\n");
+		//syslog(LOG_ERR,"Error: File could not be written!");
+		exit(EXIT_FAILURE);
+	}else if(nr != strlen(ir_buff)){
+		printf("Error: File partially written!\n");
+		//syslog(LOG_ERR,"Error: File partially written!");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
+
+	/*Open the full file for writing*/
+
+	fd = open(file_path_full, O_TRUNC | O_WRONLY | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Write data to the hum file*/
+    nr = write(fd,full_buff,strlen(full_buff));
+	if(nr == -1){
+		printf("Error: File could not be written!\n");
+		//syslog(LOG_ERR,"Error: File could not be written!");
+		exit(EXIT_FAILURE);
+	}else if(nr != strlen(full_buff)){
+		printf("Error: File partially written!\n");
+		//syslog(LOG_ERR,"Error: File partially written!");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
+
+	/*Open the vis file for writing*/
+
+	fd = open(file_path_vis, O_TRUNC | O_WRONLY | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Write data to the hum file*/
+    nr = write(fd,vis_buff,strlen(vis_buff));
+	if(nr == -1){
+		printf("Error: File could not be written!\n");
+		//syslog(LOG_ERR,"Error: File could not be written!");
+		exit(EXIT_FAILURE);
+	}else if(nr != strlen(vis_buff)){
+		printf("Error: File partially written!\n");
+		//syslog(LOG_ERR,"Error: File partially written!");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
+
+	/*Open the Log file for appending*/
+
+	fd = open(file_path_log, O_APPEND | O_WRONLY | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+    /*Write data to the hum file*/
+    nr = write(fd,time_string, strlen(time_string));
+	if(nr == -1){
+		printf("Error: File could not be written!\n");
+		//syslog(LOG_ERR,"Error: File could not be written!");
+		exit(EXIT_FAILURE);
+	}else if(nr != strlen(time_string)){
+		printf("Error: File partially written!\n");
+		//syslog(LOG_ERR,"Error: File partially written!");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
+
 }
 
 
@@ -179,7 +363,7 @@ int setup_comm()
 	memset(&servaddr, 0, sizeof(servaddr));
 	
 	/* Assign IP and port */
-	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+	servaddr.sin_addr.s_addr = inet_addr("10.0.0.36");
 	servaddr.sin_family = AF_INET;  
 	servaddr.sin_port = htons(PORT);
 	
@@ -198,10 +382,21 @@ int setup_comm()
 
 int main()
 {
-	printf("***Starting client program Version 127.0...***\n");
+	printf("***Starting client program Version GPIO***\n");
 
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 
+
+	/*Open the Log file for Creating and truncating*/
+
+	int fd = open(file_path_log, O_TRUNC | O_CREAT, 0644);
+	if(fd == -1){
+		printf("File open error for appending\n");
+		perror("File_Open:");
+		exit(EXIT_FAILURE);
+	}
+
+	close(fd);
     
 /******************************************************
 

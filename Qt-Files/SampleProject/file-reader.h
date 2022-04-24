@@ -13,6 +13,9 @@ public:
 signals:
     void SigTempChanged(float temp);
     void SigHumChanged(float hum);
+    void SigIrChanged(int ir);
+    void SigFullChanged(int full);
+    void SigVisChanged(int vis);
 
 private slots:
     void timerHandler();

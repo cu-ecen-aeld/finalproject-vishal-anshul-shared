@@ -40,5 +40,45 @@ void FileReader::timerHandler()
 
     emit SigHumChanged(hum);
 
+    /*IR file read*/
+    QFile file_ir("/var/tmp/ir-socket-data.txt");
+
+    if(!file_ir.open(QIODevice::ReadOnly | QIODevice:: Text)){
+        qDebug() << "Error opening socket file for reading!";
+        return;
+    }
+
+    int ir = QString(file_ir.readAll()).toInt();
+    qDebug() << "IR received:" << ir;
+
+    emit SigIrChanged(ir);
+
+    /*Full range file read*/
+    QFile file_full("/var/tmp/full-socket-data.txt");
+
+    if(!file_full.open(QIODevice::ReadOnly | QIODevice:: Text)){
+        qDebug() << "Error opening socket file for reading!";
+        return;
+    }
+
+    int full = QString(file_full.readAll()).toInt();
+    qDebug() << "Full received:" << full;
+
+    emit SigFullChanged(full);
+
+    /*Visible range file read*/
+    QFile file_vis("/var/tmp/vis-socket-data.txt");
+
+    if(!file_vis.open(QIODevice::ReadOnly | QIODevice:: Text)){
+        qDebug() << "Error opening socket file for reading!";
+        return;
+    }
+
+    int vis = QString(file_vis.readAll()).toInt();
+    qDebug() << "Vis received:" << vis;
+
+    emit SigVisChanged(vis);
+
+
     //test->file.close();
 }
