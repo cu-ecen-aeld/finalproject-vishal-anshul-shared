@@ -11,6 +11,10 @@
 #define RPI_COMPILE     1
 int led_status = 0;
 
+#if (RPI_COMPILE == 1)
+    struct gpiod_chip *chip;
+    struct gpiod_line *line;
+#endif
 /*
 * A signal is a message that an object can send, most of the time to inform of a status change.
 * A slot is a function that is used to accept and respond to a signal. From - https://wiki.qt.io/Qt_for_Beginners.
@@ -60,18 +64,20 @@ int Window::handle_button1(){
 
     printf("TOGGLE GPIO\n");
 #if (RPI_COMPILE == 1)
-    struct gpiod_chip *chip;
-    struct gpiod_line *line;
     int retv;
 
+    if(led_status == 0){
     chip = gpiod_chip_open("/dev/gpiochip0");
-    if (!chip)
+    if (!chip){
+        qDebug() << "Error opening GPIO chip!";
        return -1;
+    }
 
     //Get the handle to GPIO line at given offset
     line = gpiod_chip_get_line(chip, LED_PIN);
     if(line == 0){
         gpiod_chip_close(chip);
+        qDebug() << "Error getting GPIO line!";
         return -1;
     }
 
@@ -80,15 +86,17 @@ int Window::handle_button1(){
     if (retv)
     {
      gpiod_chip_close(chip);
+     qDebug() << "Error setting GPIO output!";
      return -1;
     }
 
-    led_status = 1;
-    retv = gpiod_line_set_value(line, led_status);
-    qDebug() << "Setting led value to:" << led_status;
-    printf("Setting led value to:%d\n",led_status);
-    if(retv == -1){
-        qDebug() << "Error writing value to GPIO!";
+        led_status = 1;
+        retv = gpiod_line_set_value(line, led_status);
+        qDebug() << "Setting led value to:" << led_status;
+        printf("Setting led value to:%d\n",led_status);
+        if(retv == -1){
+            qDebug() << "Error writing value to GPIO!";
+        }
     }
 
     /*
@@ -104,48 +112,39 @@ int Window::handle_button1(){
 int Window::handle_offButton(){
 
 #if (RPI_COMPILE == 1)
-    struct gpiod_chip *chip;
-    struct gpiod_line *line;
     int retv;
 
-    chip = gpiod_chip_open("/dev/gpiochip0");
-    if (!chip)
-       return -1;
+    if(led_status ==1){
+        led_status = 0;
+        retv = gpiod_line_set_value(line, led_status);
+        qDebug() << "Setting led value to:" << led_status;
+        if(retv == -1){
+            qDebug() << "Error writing value to GPIO!";
+        }
 
-    //Get the handle to GPIO line at given offset
-    line = gpiod_chip_get_line(chip, LED_PIN);
-    if(line == 0){
+        sleep(1);
+
         gpiod_chip_close(chip);
-        return -1;
     }
-
-    //set GPIO direction output
-    retv = gpiod_line_request_output(line, "foobar", 1);
-    if (retv)
-    {
-     gpiod_chip_close(chip);
-     return -1;
-    }
-
-    led_status = 0;
-    retv = gpiod_line_set_value(line, led_status);
-    qDebug() << "Setting led value to:" << led_status;
-    if(retv == -1){
-        qDebug() << "Error writing value to GPIO!";
-    }
-
-    sleep(1);
-
-    gpiod_chip_close(chip);
 
 #endif
     return 0;
 }
 
-void Window::handle_statusButton(){
+int Window::handle_statusButton(){
 
+    QMessageBox *msgBox = new QMessageBox;
 
+    msgBox->setWindowTitle("GPIO status");
 
+    if(led_status == 1)
+        msgBox->setText("GPIO status:1");
+    else
+        msgBox->setText("GPIO status:0");
+
+    msgBox->exec();
+
+    return 0;
 }
 
 void Window::SloTempChanged(float temp)
@@ -180,6 +179,8 @@ void Window::handle_button2()
 {
     //Add log file open.
     QMessageBox *msgBox = new QMessageBox;
+
+    msgBox->setWindowTitle("Sensors logs");
 
     QFile logFile("/var/tmp/log-file.txt");
 

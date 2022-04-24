@@ -84,7 +84,7 @@ static const uint qt_meta_data_Window[] = {
  // slots: parameters
     QMetaType::Int,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Int,
     QMetaType::Int,
     QMetaType::Void, QMetaType::Float,    7,
     QMetaType::Void, QMetaType::Float,    9,
@@ -104,7 +104,8 @@ void Window::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, void
         case 0: { int _r = _t->handle_button1();
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = std::move(_r); }  break;
         case 1: _t->handle_button2(); break;
-        case 2: _t->handle_statusButton(); break;
+        case 2: { int _r = _t->handle_statusButton();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = std::move(_r); }  break;
         case 3: { int _r = _t->handle_offButton();
             if (_a[0]) *reinterpret_cast< int*>(_a[0]) = std::move(_r); }  break;
         case 4: _t->SloTempChanged((*reinterpret_cast< float(*)>(_a[1]))); break;

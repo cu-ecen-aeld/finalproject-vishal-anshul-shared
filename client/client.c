@@ -66,7 +66,8 @@ void socket_open(int sockfd)
 
     while(1) {
 
-        bzero(buffer, sizeof(buffer));
+        //bzero(buffer, sizeof(buffer));
+        memset(buffer, 0 , sizeof(buffer));
         while(read(sockfd, buffer, sizeof(buffer))==0);  // read client message and copy that in the buffer
         printf("From Server : %s\n\r", buffer);
 
@@ -89,6 +90,7 @@ void parse_data(char *buffer)
 	dp += TMP_HUM_VAL_OFFSET;
 	i = 0;
 
+	memset(temp_buff, 0, sizeof(temp_buff));
 	while(*dp != ','){
 		temp_buff[i] = *dp;
 		dp++;
@@ -104,6 +106,7 @@ void parse_data(char *buffer)
 	dp += TMP_HUM_VAL_OFFSET;
 	i = 0;
 
+	memset(hum_buff, 0, sizeof(hum_buff));
 	while(*dp != ','){
 		hum_buff[i] = *dp;
 		dp++;
@@ -119,6 +122,7 @@ void parse_data(char *buffer)
 	dp += IR_VALUE_OFFSET;
 	i = 0;
 
+	memset(ir_buff, 0, sizeof(ir_buff));
 	while(*dp != ','){
 		ir_buff[i] = *dp;
 		dp++;
@@ -134,6 +138,7 @@ void parse_data(char *buffer)
 	dp += FULL_VALUE_OFFSET;
 	i = 0;
 
+	memset(full_buff, 0, sizeof(full_buff));
 	while(*dp != ','){
 		full_buff[i] = *dp;
 		dp++;
@@ -149,7 +154,8 @@ void parse_data(char *buffer)
 	dp += VIS_VALUE_OFFSET;
 	i = 0;
 
-	while(*dp != '\0'){
+	memset(vis_buff, 0, sizeof(vis_buff));
+	while(*dp != '#'){//end of file
 		vis_buff[i] = *dp;
 		dp++;
 		i++;
@@ -382,7 +388,7 @@ int setup_comm()
 
 int main()
 {
-	printf("***Starting client program Version GPIO***\n");
+	printf("***Starting client program Version GPIO new***\n");
 
 	/*Start syslog daemon*/
     openlog("client", LOG_USER, LOG_DEBUG|LOG_ERR); 

@@ -23,7 +23,7 @@ class Window : public QWidget
 public slots:
     int handle_button1();
     void handle_button2();
-    void handle_statusButton();
+    int handle_statusButton();
     int handle_offButton();
     void SloTempChanged(float temp);
     void SloHumChanged(float hum);
