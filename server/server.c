@@ -515,6 +515,7 @@ int main()
    char *str3 = ",IR:";
    char *str4 = ",FULL:";
    char *str5 = ",VIS:";
+   char *str6 = "#";
    
    
    /* Packet format: T:<temp_data>,H:<RH_data>,IR:<IR_data>,FULL:<Full_Light_data>,VIS:<VIsible_Light_data> */
@@ -549,7 +550,7 @@ int main()
     	char *str_vis = malloc(length5+1);
     	snprintf(str_vis, length5+1, "%d", sensor_data.visible_light_data);
     	
-    	total_length = (length1 + length2 + length3 + length4 + length5 +strlen(str1) +strlen(str2) + strlen(str3) +strlen(str4) + strlen(str5) -5);
+    	total_length = (length1 + length2 + length3 + length4 + length5 +strlen(str1) +strlen(str2) + strlen(str3) +strlen(str4) + strlen(str5) + strlen(str6) -6);
     	char *str_pkt = malloc(total_length);
     	
     	//printf("Total Length: %d\n\r", total_length);
@@ -576,6 +577,7 @@ int main()
     	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_vis);  	
     	//printf("strpkt: %s\n\r", str_pkt);
+    	strcat(str_pkt, str6); 
 
     	printf("Sending data: %s\n", str_pkt);
     	rt = write(connfd, str_pkt, strlen(str_pkt)); // send the message to client
@@ -609,5 +611,6 @@ int main()
 	free(str3);
 	free(str4);
 	free(str5);
+	free(str6);
 
 }
