@@ -72,6 +72,7 @@ struct data_s sensor_data;
 
 void light_readings(void)
 {
+	int errnum;
 	int ret_val =0;
 	int i2c_fd;
 	char *i2c_filename = "/dev/i2c-1"; 
@@ -79,8 +80,9 @@ void light_readings(void)
 	i2c_fd = open(i2c_filename, O_RDWR);
 	if(i2c_fd <0)
 	{
-		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1 \n\r");
-		printf("Call to open() failed. Error in accessing /dev/i2c-1\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1 %d\n\r", errnum);
+		printf("Call to open() failed. Error in accessing /dev/i2c-1 %d\n\r", errnum);
 		//return -1;
 	}
 	else
@@ -93,8 +95,9 @@ void light_readings(void)
 	ret_val = ioctl(i2c_fd, I2C_SLAVE, sensor_addr);
 	if(ret_val <0)
 	{
-		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address\n\r");
-		printf("Call to ioctl() failed. Error in setting sensor address\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address %d\n\r", errnum);
+		printf("Call to ioctl() failed. Error in setting sensor address %d\n\r", errnum);
 		return;
 	}
 	else
@@ -117,8 +120,9 @@ void light_readings(void)
 	ret_val = write(i2c_fd, &buf, 2);
 	if(ret_val != 2)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in enabling light sensor\n\r");
-		printf("Call to write() failed. Error in enabling light sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to write() failed. Error in enabling light sensor %d\n\r", errnum);
+		printf("Call to write() failed. Error in enabling light sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -140,8 +144,9 @@ void light_readings(void)
 	ret_val = write(i2c_fd, &buf, 2);
 	if(ret_val != 2)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in setting gain for light sensor\n\r");
-		printf("Call to write() failed. Error in setting gain for light sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to write() failed. Error in setting gain for light sensor %d\n\r", errnum);
+		printf("Call to write() failed. Error in setting gain for light sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -161,20 +166,22 @@ void light_readings(void)
 	ret_val = write(i2c_fd, &buf, 2);
 	if(ret_val != 2)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in setting integration time for light sensor\n\r");
-		printf("Call to write() failed. Error in setting integration time for light sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to write() failed. Error in setting integration time for light sensor %d\n\r", errnum);
+		printf("Call to write() failed. Error in setting integration time for light sensor %d\n\r", errnum);
 		return;
 	}
 	else
 	{
-		printf("Call to write() to set integration time successful. Integration time set to 300ms\n\r");
+		printf("Call to write() to set integration time successful. Integration time set to 300ms \n\r");
 	}
 	
 	usleep(1000); //wait for atleast 500ms
 	if(errno)
 	{
-		syslog(LOG_ERR, "Call to usleep() failed\n\r");
-		printf("Call to usleep() failed\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to usleep() failed %d\n\r", errnum);
+		printf("Call to usleep() failed %d\n\r", errnum);
 	}
 	
 	/******************************************
@@ -189,8 +196,9 @@ void light_readings(void)
 	ret_val = write(i2c_fd, buf, 1);
 	if(ret_val != 1)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in sending command REG_CHAN0_LOW to light sensor\n\r");
-		printf("Call to write() failed. Error in sending command REG_CHAN0_LOW to light sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to write() failed. Error in sending command REG_CHAN0_LOW to light sensor %d\n\r", errnum);
+		printf("Call to write() failed. Error in sending command REG_CHAN0_LOW to light sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -203,8 +211,9 @@ void light_readings(void)
 	ret_val = read(i2c_fd, buf, 2);
 	if(ret_val != 2)
 	{
-		syslog(LOG_ERR, "Call to read() failed. Error in reading from REG_CHAN0_LOW light sensor\n\r");
-		printf("Call to read() failed. Error in reading from REG_CHAN0_LOW temp sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from REG_CHAN0_LOW light sensor %d\n\r", errnum);
+		printf("Call to read() failed. Error in reading from REG_CHAN0_LOW temp sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -221,8 +230,9 @@ void light_readings(void)
 	ret_val = write(i2c_fd, buf, 1);
 	if(ret_val != 1)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in sending command REG_CHAN1_LOW to light sensor\n\r");
-		printf("Call to write() failed. Error in sending command REG_CHAN1_LOW to light sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to write() failed. Error in sending command REG_CHAN1_LOW to light sensor %d\n\r", errnum);
+		printf("Call to write() failed. Error in sending command REG_CHAN1_LOW to light sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -235,8 +245,9 @@ void light_readings(void)
 	ret_val = read(i2c_fd, buf, 2);
 	if(ret_val != 2)
 	{
-		syslog(LOG_ERR, "Call to read() failed. Error in reading from REG_CHAN1_LOW light sensor\n\r");
-		printf("Call to read() failed. Error in reading from REG_CHAN1_LOW temp sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from REG_CHAN1_LOW light sensor %d\n\r", errnum);
+		printf("Call to read() failed. Error in reading from REG_CHAN1_LOW temp sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -267,7 +278,7 @@ void light_readings(void)
 
 void temp_readings(void)
 {
-	//TODO: use errno
+	int errnum;
 	int ret_val =0;
 	int i2c_fd;
 	char *i2c_filename = "/dev/i2c-1"; 
@@ -275,8 +286,9 @@ void temp_readings(void)
 	i2c_fd = open(i2c_filename, O_RDWR);
 	if(i2c_fd <0)
 	{
-		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1\n\r");
-		printf("Call to open() failed. Error in accessing /dev/i2c-1\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1 %d\n\r", errnum);
+		printf("Call to open() failed. Error in accessing /dev/i2c-1 %d\n\r", errnum);
 		return;
 	}
 	else
@@ -289,8 +301,9 @@ void temp_readings(void)
 	ret_val = ioctl(i2c_fd, I2C_SLAVE, sensor_addr);
 	if(ret_val <0)
 	{
-		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address\n\r");
-		printf("Call to ioctl() failed. Error in setting sensor address\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address %d\n\r", errnum);
+		printf("Call to ioctl() failed. Error in setting sensor address %d\n\r", errnum);
 		return;
 	}
 	else
@@ -303,8 +316,9 @@ void temp_readings(void)
 	ret_val = write(i2c_fd, &reg, 1);
 	if(ret_val != 1)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in writing to temp sensor\n\r");
-		printf("Call to write() failed. Error in writing to temp sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to temp sensor %d\n\r", errnum);
+		printf("Call to write() failed. Error in writing to temp sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -315,8 +329,9 @@ void temp_readings(void)
 	usleep(11000); //wait for atleast 10.8ms
 	if(errno)
 	{
-		syslog(LOG_ERR, "Call to usleep() failed\n\r");
-		printf("Call to usleep() failed\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to usleep() failed %d\n\r", errnum);
+		printf("Call to usleep() failed %d\n\r", errnum);
 	}
 	
 	int  n = 2;
@@ -325,8 +340,9 @@ void temp_readings(void)
 	ret_val = read(i2c_fd, buf, n);
 	if(ret_val != n)
 	{
-		syslog(LOG_ERR, "Call to read() failed. Error in reading from temp sensor\n\r");
-		printf("Call to read() failed. Error in reading from temp sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from temp sensor %d\n\r", errnum);
+		printf("Call to read() failed. Error in reading from temp sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -352,7 +368,7 @@ void temp_readings(void)
 
 void RH_readings(void)
 {
-	//TODO: use errno
+	int errnum;
 	int ret_val =0;
 	int i2c_fd;
 	char *i2c_filename = "/dev/i2c-1"; 
@@ -360,8 +376,9 @@ void RH_readings(void)
 	i2c_fd = open(i2c_filename, O_RDWR);
 	if(i2c_fd <0)
 	{
-		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1\n\r");
-		printf("Call to open() failed. Error in accessing /dev/i2c-1\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to open() failed. Error in accessing /dev/i2c-1 %d\n\r", errnum);
+		printf("Call to open() failed. Error in accessing /dev/i2c-1 %d\n\r", errnum);
 		return;
 	}
 	else
@@ -374,8 +391,9 @@ void RH_readings(void)
 	ret_val = ioctl(i2c_fd, I2C_SLAVE, sensor_addr);
 	if(ret_val <0)
 	{
-		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address\n\r");
-		printf("Call to ioctl() failed. Error in setting sensor address\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to ioctl() failed. Error in setting sensor address %d\n\r", errnum);
+		printf("Call to ioctl() failed. Error in setting sensor address %d\n\r", errnum);
 		return;
 	}
 	else
@@ -388,8 +406,9 @@ void RH_readings(void)
 	ret_val = write(i2c_fd, &reg, 1);
 	if(ret_val != 1)
 	{
-		syslog(LOG_ERR, "Call to write() failed. Error in writing to temp sensor\n\r");
-		printf("Call to write() failed. Error in writing to temp sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to write() failed. Error in writing to temp sensor %d\n\r", errnum);
+		printf("Call to write() failed. Error in writing to temp sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -400,8 +419,9 @@ void RH_readings(void)
 	usleep(11000); //wait for atleast 10.8ms
 	if(errno)
 	{
-		syslog(LOG_ERR, "Call to usleep() failed\n\r");
-		printf("Call to usleep() failed\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to usleep() failed %d\n\r", errnum);
+		printf("Call to usleep() failed %d\n\r", errnum);
 	}
 	
 	int  n = 2;
@@ -410,8 +430,9 @@ void RH_readings(void)
 	ret_val = read(i2c_fd, buf, n);
 	if(ret_val != n)
 	{
-		syslog(LOG_ERR, "Call to read() failed. Error in reading from temp sensor\n\r");
-		printf("Call to read() failed. Error in reading from temp sensor\n\r");
+		errnum = errno;
+		syslog(LOG_ERR, "Call to read() failed. Error in reading from temp sensor %d\n\r", errnum);
+		printf("Call to read() failed. Error in reading from temp sensor %d\n\r", errnum);
 		return;
 	}
 	else
@@ -438,9 +459,6 @@ int main()
 {
     int sockfd, connfd, len;
     struct sockaddr_in servaddr, cli;
-    
-    //float temp_data;
-    //float RH_data;
      
     // 1. create a socket
     sockfd = socket(AF_INET, SOCK_STREAM, 0); 
@@ -553,30 +571,18 @@ int main()
     	total_length = (length1 + length2 + length3 + length4 + length5 +strlen(str1) +strlen(str2) + strlen(str3) +strlen(str4) + strlen(str5) + strlen(str6) -6);
     	char *str_pkt = malloc(total_length);
     	
-    	//printf("Total Length: %d\n\r", total_length);
     	memset(str_pkt, 0, total_length);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	
     	strcat(str_pkt, str1);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_temp);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str2);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_rh);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str3);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_ir);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str4);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_full);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str5);
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str_vis);  	
-    	//printf("strpkt: %s\n\r", str_pkt);
     	strcat(str_pkt, str6); 
 
     	printf("Sending data: %s\n", str_pkt);
