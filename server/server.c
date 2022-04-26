@@ -176,7 +176,7 @@ void light_readings(void)
 		printf("Call to write() to set integration time successful. Integration time set to 300ms \n\r");
 	}
 	
-	usleep(1000); //wait for atleast 500ms
+	usleep(500000); //wait for atleast 500ms
 	if(errno)
 	{
 		errnum = errno;
@@ -604,7 +604,7 @@ int main()
         free(str_vis);
         free(str_pkt);
         
-    	sleep(10);
+    	sleep(2);
 
     }
     printf("Exit while()\n");
