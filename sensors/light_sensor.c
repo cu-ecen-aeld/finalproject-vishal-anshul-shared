@@ -215,9 +215,9 @@ int main()
 	printf("buf[1]: %d\n\r", buf[1]);
 	printf("x: %d\n\r", x);
 	
-	int ir = x >>16;
-	int full = x&0xFFFF;
-	int visible = full -ir;
+	unsigned int ir = x >>16;
+	unsigned int full = x&0xFFFF;
+	unsigned int visible = full -ir;
 	
 	printf("IR: %d\n\r", ir);
 	printf("Full: %d\n\r", full);
