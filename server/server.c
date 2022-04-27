@@ -613,16 +613,9 @@ int main()
     	sleep(2);
 
     }
-    printf("Exit while()\n");
     
     //6. Close the socket
     close(sockfd);
     
-	free(str1);
-	free(str2);
-	free(str3);
-	free(str4);
-	free(str5);
-	free(str6);
 
 }
