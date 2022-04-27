@@ -266,6 +266,8 @@ void light_readings(void)
 	printf("IR: %d\n\r", sensor_data.ir_light_data);
 	printf("Full: %d\n\r", sensor_data.full_light_data);
 	printf("Visible: %d\n\r", sensor_data.visible_light_data);
+	
+	close(i2c_fd);
 }
 
 
@@ -357,6 +359,8 @@ void temp_readings(void)
 	sensor_data.temp_celcius_data = ((175.72*temp)/65536) - 46.85;
 	syslog(LOG_DEBUG, "Temperature in celcius: %f", (float)sensor_data.temp_celcius_data);
 	printf("Temperature in celcius: %f\n\r", (float)sensor_data.temp_celcius_data);
+	
+	close(i2c_fd);
 }
 
 /***********************************************************************************************
@@ -447,6 +451,8 @@ void RH_readings(void)
 	sensor_data.rel_humidity_data = ((125*relative_humidity_raw)/65536) - 6;
 	syslog(LOG_DEBUG, "Relative Humidity: %f", (float)sensor_data.rel_humidity_data);
 	printf("Relative Humidity: %f\n\r", (float)sensor_data.rel_humidity_data);
+	
+	close(i2c_fd);
 }
         
  /***********************************************************************************************
