@@ -369,7 +369,7 @@ int setup_comm()
 	memset(&servaddr, 0, sizeof(servaddr));
 	
 	/* Assign IP and port */
-	servaddr.sin_addr.s_addr = inet_addr("10.0.0.37");
+	servaddr.sin_addr.s_addr = inet_addr("128.138.189.204");
 	servaddr.sin_family = AF_INET;  
 	servaddr.sin_port = htons(PORT);
 	
